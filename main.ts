@@ -1,20 +1,21 @@
 
-let direction = 0
-let numOfDirections = 0
-let genLoc: number[] = []
-let startY = 0
-let startX = 0
-let takenRooms: boolean[][] = []
-let floorLayout: number[][] = []
-let floor = 0
-let initialValue = 0
-let rooms = [tiles.createMap(tilemap`level2`)]
-rooms[0] = tiles.createMap(tilemap`room0`)
-rooms[1] = tiles.createMap(tilemap`room4`)
-rooms[2] = tiles.createMap(tilemap`room2`)
-rooms[3] = tiles.createMap(tilemap`room6`)
-let currentX
-let currentY
+let direction = 0;
+let numOfDirections = 0;
+let genLoc: number[] = [];
+let startY = 0;
+let startX = 0;
+let takenRooms: boolean[][] = [];
+let floorLayout: number[][] = [];
+let floor = 0;
+let initialValue = 0;
+let numberOfEdgeRooms = 0;
+let rooms = [tiles.createMap(tilemap`level2`)];
+rooms[0] = tiles.createMap(tilemap`room0`);
+rooms[1] = tiles.createMap(tilemap`room4`);
+rooms[2] = tiles.createMap(tilemap`room2`);
+rooms[3] = tiles.createMap(tilemap`room6`);
+let currentX;
+let currentY;
 floorLayout = [
 [
 0,
@@ -279,6 +280,8 @@ function floorGen(floorNum: number) {
         genLoc.shift()
     }
     
+    console.log("sum: " + newSum)
+    findEdgeRooms(floorLayout);
     for (let i = 0; i <= floorLayout.length - 1; i++) {
         let message = "";
         for (let j = 0; j <= floorLayout[i].length - 1; j++) {
@@ -286,9 +289,58 @@ function floorGen(floorNum: number) {
         }
         console.log(message)
     }
-    console.log("sum: " + newSum)
+
 }
 
+function sumAround(layout: number[][], c: number, v: number){
+    let sum = 0;
+    let up = true;
+    let down = true;
+    let left = true;
+    let right = true;
+
+    if (c-1 < 0){
+        up = false;
+    }
+    if (c + 1 > 3) {
+        down = false;
+    }
+    if (v - 1 < 0) {
+        left = false;
+    }
+    if (v + 1 > 3) {
+        right = false;
+    }
+    
+    if(up == true){
+        sum = sum+layout[c-1][v];
+    }
+    if(down == true){
+        sum = sum+layout[c+1][v];
+    }
+    if(left == true){
+        sum = sum+layout[c][v-1];
+    }
+    if (right == true) {
+        sum = sum+layout[c][v+1];
+    }
+
+    return sum;
+}
+
+
+function findEdgeRooms(layout: number[][]){
+    let i = 0
+    let j = 0
+    for (i = 0; i < layout.length; i++) {
+        for (j = 0; j < layout[i].length; j++) {
+            if(sumAround(layout, i, j) == 1){
+                layout[i][j] = 2;
+                numberOfEdgeRooms ++;
+            }
+        }
+    }
+}
 
 
 
