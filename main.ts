@@ -68,7 +68,18 @@ false,
 false
 ]
 ]
-floorGen(1);
+floorGen(floor);
+fillRooms(floorLayout)
+
+console.log("Post room filling:")
+for (let i = 0; i <= floorLayout.length - 1; i++) {
+    let message = "";
+    for (let j = 0; j <= floorLayout[i].length - 1; j++) {
+        message = message + floorLayout[i][j].toString() + "\t";
+    }
+    console.log(message)
+}
+
 
 
 function floorGen(floorNum: number) {
@@ -282,6 +293,7 @@ function floorGen(floorNum: number) {
     
     console.log("sum: " + newSum)
     findEdgeRooms(floorLayout);
+    console.log("pre room filling:")
     for (let i = 0; i <= floorLayout.length - 1; i++) {
         let message = "";
         for (let j = 0; j <= floorLayout[i].length - 1; j++) {
@@ -289,6 +301,10 @@ function floorGen(floorNum: number) {
         }
         console.log(message)
     }
+    if(numberOfEdgeRooms < 1){
+        floorGen(floor)
+    }
+    floorLayout[startX][startY] = 9;
 
 }
 
@@ -340,6 +356,41 @@ function findEdgeRooms(layout: number[][]){
             }
         }
     }
+}
+
+function fillRooms(layout: number[][]){
+    //mark boss room first
+    let distance = 0
+    let bossMarked = false;
+    for (let i = 0; i < layout.length; i++) {
+        for (let j = 0; j < layout[i].length; j++) {
+            if (layout[i][j] == 2) {
+                if ((Math.abs(i - startX) + Math.abs(j - startY)) > distance){
+                    distance = Math.abs(i - startX) + Math.abs(j - startY);
+                }
+            }
+        }
+    }
+    for (let i = 0; i < layout.length; i++) {
+        for (let j = 0; j < layout[i].length; j++) {
+            if (layout[i][j] == 2) {
+                if ((Math.abs(i - startX) + Math.abs(j - startY)) == distance && bossMarked == false) {
+                    layout[i][j] = 3;
+                    bossMarked = true;
+                }
+            }
+        }
+    }
+    // Now empty rooms are 1, edge rooms are 2, the boss room is 3, and start room is 9.
+    // Next the empty rooms will get marked with a random room number from 4 to 8.
+    for (let i = 0; i < layout.length; i++) {
+        for (let j = 0; j < layout[i].length; j++) {
+            if (layout[i][j] == 1) {
+                layout[i][j] = randint(4, 8);
+            }
+        }
+    }
+
 }
 
 
