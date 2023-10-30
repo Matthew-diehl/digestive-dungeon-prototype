@@ -6,6 +6,7 @@ let startY = 0;
 let startX = 0;
 let takenRooms: boolean[][] = [];
 let floorLayout: number[][] = [];
+let roomFilledArray: Object[][] = [];
 let floor = 0;
 let initialValue = 0;
 let numberOfEdgeRooms = 0;
@@ -14,8 +15,10 @@ rooms[0] = tiles.createMap(tilemap`room0`);
 rooms[1] = tiles.createMap(tilemap`room4`);
 rooms[2] = tiles.createMap(tilemap`room2`);
 rooms[3] = tiles.createMap(tilemap`room6`);
+let currentRoom: number = null;
 let currentX;
 let currentY;
+
 floorLayout = [
 [
 0,
@@ -70,6 +73,8 @@ false
 ]
 floorGen(floor);
 fillRooms(floorLayout)
+currentX = startX;
+currentY = startY;
 
 console.log("Post room filling:")
 for (let i = 0; i <= floorLayout.length - 1; i++) {
@@ -389,6 +394,46 @@ function fillRooms(layout: number[][]){
                 layout[i][j] = randint(4, 8);
             }
         }
+    }
+    // Next fill in an empty array with Objects of rooms corresponding to the number in each location
+    for (let i = 0; i < layout.length; i++) {
+        for (let j = 0; j < layout[i].length; j++) {
+            if (layout[i][j] == 9) {
+                roomFilledArray[i][j] = { tilemap: rooms[0], enemies: 0, chest: false, cleared: true, boss: false, empty: false}
+            }
+            if (layout[i][j] == 2) {
+                roomFilledArray[i][j] = { tilemap: rooms[1], enemies: 3, chest: true, cleared: false, boss: false, empty: false}
+            }
+            if (layout[i][j] == 3) {
+                roomFilledArray[i][j] = { tilemap: rooms[2], enemies: 1, chest: true, cleared: false, boss: true, empty: false}
+            }
+            if (layout[i][j] == 4) {
+                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(2, 4), chest: false, cleared: false, boss: false, empty: false }
+            }
+            if (layout[i][j] == 5) {
+                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(3, 5), chest: true, cleared: false, boss: false, empty: false }
+            }
+            if (layout[i][j] == 6) {
+                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(1, 2), chest: false, cleared: false, boss: false, empty: false }
+            }
+            if (layout[i][j] == 7) {
+                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(2, 4), chest: false, cleared: false, boss: false, empty: false }
+            }
+            if (layout[i][j] == 8) {
+                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: 4, chest: true, cleared: false, boss: false, empty: false }
+            }
+            if (layout[i][j] == 0) {
+                roomFilledArray[i][j] = { empty: true}
+            }
+        }
+    }
+
+}
+//when you leave one room and enter another this function will swap out the old room for the new one. this is a wip.
+function swapRooms(currentX: number, currentY: number){
+    if(currentRoom == null){
+      // tiles.setTileMap(tilemap roomFilledArray[currentX][currentY].tilemap)
+       
     }
 
 }
