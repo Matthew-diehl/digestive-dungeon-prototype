@@ -1,4 +1,20 @@
+namespace NumProp {
+    export const enemies = NumProp.create()
+}
+namespace BoolProp {
+    export const cleared = BoolProp.create()
+    export const empty = BoolProp.create()
+    export const chest = BoolProp.create()
+    export const boss = BoolProp.create()
+    export const left = BoolProp.create()
+    export const right = BoolProp.create()
+    export const up = BoolProp.create()
+    export const down = BoolProp.create()
 
+}
+namespace AnyProp {
+    export const tileMap = AnyProp.create()
+}
 let direction = 0;
 let numOfDirections = 0;
 let genLoc: number[] = [];
@@ -6,7 +22,34 @@ let startY = 0;
 let startX = 0;
 let takenRooms: boolean[][] = [];
 let floorLayout: number[][] = [];
-let roomFilledArray: Object[][] = [];
+let roomFilledArray: blockObject.BlockObject[][] = []
+
+roomFilledArray = [
+    [
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create()
+    ],
+    [
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create()
+    ],
+    [
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create()
+    ],
+    [
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create(),
+        blockObject.create()
+    ]
+]
 let floor = 0;
 let initialValue = 0;
 let numberOfEdgeRooms = 0;
@@ -84,6 +127,155 @@ for (let i = 0; i <= floorLayout.length - 1; i++) {
     }
     console.log(message)
 }
+swapRooms(currentX,currentY)
+//end of onStart code
+
+
+// getters
+function getUp(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.up)
+}
+function getDown(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.down)
+}
+function getLeft(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.left)
+}
+function getRight(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.right)
+}
+function getTileMap(row: number, col: number) {
+    return blockObject.getAnyProperty(roomFilledArray[row][col], AnyProp.tileMap)
+}
+function getEmpty(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.empty)
+}
+function getCleared(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.cleared)
+}
+function getChest(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.chest)
+}
+function getBoss(row: number, col: number) {
+    return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.boss)
+}
+function getEnemies(row: number, col: number) {
+    return blockObject.getNumberProperty(roomFilledArray[row][col], NumProp.enemies)
+}
+// setters
+function setEmpty(row: number, col: number, empty: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.empty, empty)
+}
+function setCleared(row: number, col: number, cleared: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.cleared, cleared)
+}
+
+function setTileMap(row: number, col: number, tile: number) {
+    switch (tile) {
+        case 1: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`room0`);
+            break;
+        case 2: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 3: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 4: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 5: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 6: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 7: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 8: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        case 9: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+            break;
+        default:
+            blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`level9`);
+
+    }
+
+}
+function setBoss(row: number, col: number, boss: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.boss, boss)
+}
+function setLeft(row: number, col: number, left: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.left, left)
+}
+function setRight(row: number, col: number, right: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.right, right)
+}
+function setUp(row: number, col: number, up: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.up, up)
+}
+function setDown(row: number, col: number, down: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.down, down)
+}
+
+function setDoors(row: number, col: number, layout: number[][]) {
+    //this will set flags on the objects so we know which directions need doors
+    let up3 = true
+    let down3 = true
+    let left3 = true
+    let right3 = true
+    if (row - 1 < 0) {
+        up3 = false
+    }
+    else if (layout[row - 1][col] == 0) {
+        up3 = false
+    }
+    if (row + 1 > 3) {
+        down3 = false
+    }
+    else if (layout[row + 1][col] == 0) {
+        down3 = false
+    }
+    if (col - 1 < 0) {
+        left3 = false
+    }
+    else if (layout[row][col - 1] == 0) {
+        left3 = false
+    }
+    if (col + 1 > 3) {
+        right3 = false
+    }
+    else if (layout[row][col + 1] == 0) {
+        right3 = false
+    }
+    // if the direction is still true there is a room to that side of the current room.
+    if (up3) {
+        setUp(row, col, true)
+    }
+    else {
+        setUp(row, col, false)
+    }
+    if (down3) {
+        setDown(row, col, true)
+    }
+    else {
+        setDown(row, col, false)
+    }
+    if (left3) {
+        setLeft(row, col, true)
+    }
+    else {
+        setLeft(row, col, false)
+    }
+    if (right3) {
+        setRight(row, col, true)
+    }
+    else {
+        setRight(row, col, false)
+    }
+
+}
+function setEnemies(row: number, col: number, enemies: number) {
+    blockObject.setNumberProperty(roomFilledArray[row][col], NumProp.enemies, enemies)
+}
+function setChest(row: number, col: number, chest: boolean) {
+    blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.chest, chest)
+}
+//end of getters and setters
 
 
 
@@ -396,34 +588,92 @@ function fillRooms(layout: number[][]){
         }
     }
     // Next fill in an empty array with Objects of rooms corresponding to the number in each location
-    for (let i = 0; i < layout.length; i++) {
-        for (let j = 0; j < layout[i].length; j++) {
-            if (layout[i][j] == 9) {
-                roomFilledArray[i][j] = { tilemap: rooms[0], enemies: 0, chest: false, cleared: true, boss: false, empty: false}
+    for (let a = 0; a <= layout.length - 1; a++) {
+        for (let b = 0; b <= layout[a].length - 1; b++) {
+            // roomFilledArray[i][j] = { tileMap: 0, enemies: 0, chest: false, cleared: true, boss: false, empty: false}
+            if (layout[a][b] == 9) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, 0)
+                setChest(a, b, false)
+                setCleared(a, b, true)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
+
             }
-            if (layout[i][j] == 2) {
-                roomFilledArray[i][j] = { tilemap: rooms[1], enemies: 3, chest: true, cleared: false, boss: false, empty: false}
+            // roomFilledArray[i][j] = { tileMap: 1, enemies: 3, chest: true, cleared: false, boss: false, empty: false}
+            if (layout[a][b] == 2) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, 3)
+                setChest(a, b, true)
+                setCleared(a, b, false)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 3) {
-                roomFilledArray[i][j] = { tilemap: rooms[2], enemies: 1, chest: true, cleared: false, boss: true, empty: false}
+            // roomFilledArray[i][j] = { tileMap: 2, enemies: 2, chest: true, cleared: false, boss: true, empty: false}
+            if (layout[a][b] == 3) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, 2)
+                setChest(a, b, true)
+                setCleared(a, b, false)
+                setBoss(a, b, true)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 4) {
-                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(2, 4), chest: false, cleared: false, boss: false, empty: false }
+            // roomFilledArray[i][j] = { tileMap: 3, enemies: randint(2, 4), chest: false, cleared: false, boss: false, empty: false }
+            if (layout[a][b] == 4) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, randint(2, 4))
+                setChest(a, b, false)
+                setCleared(a, b, false)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 5) {
-                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(3, 5), chest: true, cleared: false, boss: false, empty: false }
+            // roomFilledArray[i][j] = { tileMap: 3, enemies: randint(3, 5), chest: true, cleared: false, boss: false, empty: false }
+            if (layout[a][b] == 5) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, randint(3, 5))
+                setChest(a, b, true)
+                setCleared(a, b, false)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 6) {
-                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(1, 2), chest: false, cleared: false, boss: false, empty: false }
+            // roomFilledArray[i][j] = { tileMap: 3, enemies: randint(1, 2), chest: false, cleared: false, boss: false, empty: false }
+            if (layout[a][b] == 6) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, randint(1, 2))
+                setChest(a, b, false)
+                setCleared(a, b, false)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 7) {
-                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: randint(2, 4), chest: false, cleared: false, boss: false, empty: false }
+            // roomFilledArray[i][j] = { tileMap: 3, enemies: randint(2, 4), chest: false, cleared: false, boss: false, empty: false }
+            if (layout[a][b] == 7) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, randint(2, 4))
+                setChest(a, b, false)
+                setCleared(a, b, false)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 8) {
-                roomFilledArray[i][j] = { tilemap: rooms[3], enemies: 4, chest: true, cleared: false, boss: false, empty: false }
+            // roomFilledArray[i][j] = { tileMap: 3, enemies: 4, chest: true, cleared: false, boss: false, empty: false }
+            if (layout[a][b] == 8) {
+                setTileMap(a, b, layout[a][b])
+                setEnemies(a, b, 4)
+                setChest(a, b, true)
+                setCleared(a, b, false)
+                setBoss(a, b, false)
+                setEmpty(a, b, false)
+                setDoors(a, b, layout)
             }
-            if (layout[i][j] == 0) {
-                roomFilledArray[i][j] = { empty: true}
+            // roomFilledArray[i][j] = { tileMap: 4, empty: true}
+            if (layout[a][b] == 0) {
+                setEmpty(a, b, true)
             }
         }
     }
@@ -432,9 +682,9 @@ function fillRooms(layout: number[][]){
 //when you leave one room and enter another this function will swap out the old room for the new one. this is a wip.
 function swapRooms(currentX: number, currentY: number){
     if(currentRoom == null){
-      // tiles.setTileMap(tilemap roomFilledArray[currentX][currentY].tilemap)
-       
+        tiles.setCurrentTilemap(getTileMap(currentX, currentY))       
     }
+    //pick up here matt to swap to all other rooms correctly!!!
 
 }
 
