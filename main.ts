@@ -60,10 +60,15 @@ let floor = 1;
 let initialValue = 0;
 let numberOfEdgeRooms = 0;
 let currentRoom: number = null;
-let currentX: number;
-let currentY: number;
+let GcurrentX: number;
+let GcurrentY: number;
 let previousX: number;
 let previousY: number;
+
+let goingUp: boolean;
+let goingDown: boolean;
+let goingRight: boolean;
+let goingLeft: boolean;
 
 floorLayout = [
 [
@@ -135,37 +140,56 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sp
 })
 
 
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenNorth, function (sprite, location) {
-    previousX = currentX
-    previousY = currentY
-    currentY = currentY - 1
+scene.onOverlapTile(SpriteKind.Player, tiles.util.door0, function (sprite, location) {
+    if(getCleared(GcurrentX,GcurrentY)){
+    GcurrentY = GcurrentY - 1
+    goingUp = true
+    goingDown = false
+    goingLeft = false
+    goingRight = false
 
     blockControl.raiseEvent(3, 0)
+    pause(1000)
+    }
+    
 
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenSouth, function (sprite, location) {
-    previousX = currentX
-    previousY = currentY
-    currentY = currentY + 1
+scene.onOverlapTile(SpriteKind.Player, tiles.util.door15, function (sprite, location) {
+    if(getCleared(GcurrentX,GcurrentY)){
+    GcurrentY = GcurrentY + 1
 
-    game.splash("hi")
-
+    goingUp = false
+    goingDown = true
+    goingLeft = false
+    goingRight = false
     blockControl.raiseEvent(3, 0)
+    pause(1000)
+    }
+    
 })
 
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenEast, function (sprite, location) {
-    previousX = currentX
-    previousY = currentY
-    currentX = currentX - 1
-
+scene.onOverlapTile(SpriteKind.Player,  tiles.util.door6, function (sprite, location) {
+    if(getCleared(GcurrentX,GcurrentY)){
+    GcurrentX = GcurrentX - 1
+    goingUp = false
+    goingDown = false
+    goingLeft = true
+    goingRight = false
     blockControl.raiseEvent(3, 0)
+    pause(1000)
+    }
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenWest, function (sprite, location) {
-    previousX = currentX
-    previousY = currentY
-    currentY = currentY + 1
-
+scene.onOverlapTile(SpriteKind.Player, tiles.util.door9, function (sprite, location) {
+    if(getCleared(GcurrentX,GcurrentY)){
+    GcurrentY = GcurrentX + 1
+    goingUp = false
+    goingDown = false
+    goingLeft = false
+    goingRight = true
     blockControl.raiseEvent(3, 0)
+    pause(1000)
+    }
+    
 })
 let gameStarted = false
 scene.setBackgroundImage(assets.image`temp`)
@@ -271,28 +295,29 @@ function setDoors(row: number, col: number, layout: number[][]) {
     let down3 = true
     let left3 = true
     let right3 = true
-    if (row - 1 < 0) {
-        up3 = false
-    }
-    else if (layout[row - 1][col] == 0) {
-        up3 = false
-    }
-    if (row + 1 > 3) {
-        down3 = false
-    }
-    else if (layout[row + 1][col] == 0) {
-        down3 = false
-    }
+    
     if (col - 1 < 0) {
-        left3 = false
+        up3 = false
     }
     else if (layout[row][col - 1] == 0) {
-        left3 = false
+        up3 = false
     }
     if (col + 1 > 3) {
-        right3 = false
+        down3 = false
     }
     else if (layout[row][col + 1] == 0) {
+        down3 = false
+    }
+    if (row - 1 < 0) {
+        left3 = false
+    }
+    else if (layout[row - 1][col] == 0) {
+        left3 = false
+    }
+    if (row + 1 > 3) {
+        right3 = false
+    }
+    else if (layout[row + 1][col] == 0) {
         right3 = false
     }
     // if the direction is still true there is a room to that side of the current room.
@@ -363,9 +388,9 @@ function gameStart(){
     controller.moveSprite(player)
     floorGen(floor);
     fillRooms(floorLayout)
-    currentX = startX;
-    currentY = startY;
-    fullRoomLoadSequence(currentX,currentY,player)
+    GcurrentX = startX;
+    GcurrentY = startY;
+    fullRoomLoadSequence(GcurrentX,GcurrentY,player)
     
     
     
@@ -373,21 +398,23 @@ function gameStart(){
     
 }
 function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprite){
-    swapRooms(currentX, currentY)
-    loadRoomTilesEnemies(currentX, currentY)
+    swapRooms(GcurrentX, GcurrentY)
+    game.splash("up " + getUp(currentX, currentY) + " down " + getDown(currentX, currentY) + " right " + getRight(currentX, currentY) + " left " + getLeft(currentX, currentY))
+    loadRoomTilesEnemies(GcurrentX, GcurrentY)
     
     
     timer.background(function() {
         chestLooted = false        
         roomEnemiesLeft = getEnemies(currentX, currentY)
-
+        game.showLongText("waiting", DialogLayout.Bottom)
         if (roomEnemiesLeft == 0 || getCleared(currentX, currentY)) {
             blockControl.raiseEvent(1, 0)
             
         }
     })
     
-   
+    
+    
     blockControl.waitForEvent(1, 0)
     timer.background(function() {
         setEnemies(currentX, currentY, 0)
@@ -404,22 +431,23 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
     setCleared(currentX, currentY, true)
     unlockRoom(currentX,currentY)
 
-    game.splash("here")
+    
     blockControl.waitForEvent(3, 0)
-    game.splash("past")
-    if(previousX<currentX){
-        player.setPosition(24, 52)
-    }
-    else if(previousX>currentX){
-        player.setPosition(136, 52)
-    }
-    else if(previousY<currentY){
+    
+    if(goingUp){
         player.setPosition(72, 96)
     }
-    else{
+    else if(goingDown){
         player.setPosition(72, 24)
     }
-    fullRoomLoadSequence(currentX, currentY, player)
+    else if(goingRight){
+        player.setPosition(24, 52)
+    }
+    else{
+        player.setPosition(136, 52)
+        
+    }
+    fullRoomLoadSequence(GcurrentX, GcurrentY, player)
     
 }
 
@@ -434,10 +462,10 @@ function unlockRoom(currentX:number,currentY:number){
         tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.doorOpenSouth)
     }
     if (getRight(currentX, currentY)) {
-        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.doorOpenWest)
-    }
-    if (getLeft(currentX, currentY)) {
         tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.doorOpenEast)
+    }
+    if (getLeft(currentX, currentY)) { 
+        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.doorOpenWest)
     }
 }
 
@@ -759,10 +787,10 @@ function loadRoomTilesEnemies(currentX: number, currentY: number){
         tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.greenOuterSouth1)
     }
     if (!getRight(currentX, currentY)) {
-        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.greenOuterWest0)
-    }
-    if (!getLeft(currentX, currentY)) {
         tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.greenOuterEast0)
+    }   
+    if (!getLeft(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.greenOuterWest0)
     }
 }
 
@@ -771,11 +799,11 @@ function loadRoomTilesEnemies(currentX: number, currentY: number){
 function floorGen(floorNum: number) {
     startX = randint(0, 3)
     startY = randint(0, 3)
-    currentX = startX
-    currentY = startY
+    GcurrentX = startX
+    GcurrentY = startY
     floorLayout[startX][startY] = 1
     takenRooms[startX][startY] = true
-    genLoc = [currentX * 10 + currentY]
+    genLoc = [GcurrentX * 10 + GcurrentY]
     let newSum = sumFloorLayout(floorLayout);
     while (newSum < 9) {
         let k = 0
@@ -785,17 +813,17 @@ function floorGen(floorNum: number) {
         let up = false
         numOfDirections = randint(1, 3)
         if(newSum >= 2){numOfDirections = 1}
-        currentX = (genLoc[0]- genLoc[0]%10) / 10;
-        currentY = genLoc[0] % 10;
+        GcurrentX = (genLoc[0]- genLoc[0]%10) / 10;
+        GcurrentY = genLoc[0] % 10;
         while (genLoc.length != 0 || genLoc != null){
-            if (currentY - 1 < 0 || currentY + 1 > 3 || currentX - 1 < 0 || currentX + 1 > 3){
+            if (GcurrentY - 1 < 0 || GcurrentY + 1 > 3 || GcurrentX - 1 < 0 || GcurrentX + 1 > 3){
                 // case up is out of bounds
-                if (currentY - 1 < 0 && currentY + 1 <= 3 && currentX + 1 <= 3 && currentX - 1 >= 0){
-                    if (takenRooms[currentX][currentY + 1] == true && takenRooms[currentX - 1][currentY] == true && takenRooms[currentX + 1][currentY] == true){
+                if (GcurrentY - 1 < 0 && GcurrentY + 1 <= 3 && GcurrentX + 1 <= 3 && GcurrentX - 1 >= 0){
+                    if (takenRooms[GcurrentX][GcurrentY + 1] == true && takenRooms[GcurrentX - 1][GcurrentY] == true && takenRooms[GcurrentX + 1][GcurrentY] == true){
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else{
@@ -803,12 +831,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                     // case down is out of bounds
-                else if (currentY - 1 >= 0 && currentY + 1 > 3 && currentX + 1 <= 3 && currentX - 1 >= 0) {
-                    if (takenRooms[currentX][currentY - 1] == true && takenRooms[currentX - 1][currentY] == true && takenRooms[currentX + 1][currentY] == true ){
+                else if (GcurrentY - 1 >= 0 && GcurrentY + 1 > 3 && GcurrentX + 1 <= 3 && GcurrentX - 1 >= 0) {
+                    if (takenRooms[GcurrentX][GcurrentY - 1] == true && takenRooms[GcurrentX - 1][GcurrentY] == true && takenRooms[GcurrentX + 1][GcurrentY] == true ){
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -816,12 +844,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                     //case left is out of bounds
-                else if (currentY - 1 >= 0 && currentY + 1 <= 3 && currentX + 1 <= 3 && currentX - 1 < 0) {
-                    if (takenRooms[currentX][currentY - 1] == true && takenRooms[currentX][currentY + 1] == true && takenRooms[currentX + 1][currentY] == true) {
+                else if (GcurrentY - 1 >= 0 && GcurrentY + 1 <= 3 && GcurrentX + 1 <= 3 && GcurrentX - 1 < 0) {
+                    if (takenRooms[GcurrentX][GcurrentY - 1] == true && takenRooms[GcurrentX][GcurrentY + 1] == true && takenRooms[GcurrentX + 1][GcurrentY] == true) {
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -829,12 +857,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                 //case right is out of bounds
-                else if (currentY - 1 >= 0 && currentY + 1 <= 3 && currentX + 1 > 3 && currentX - 1 >= 0) {
-                    if (takenRooms[currentX][currentY - 1] == true && takenRooms[currentX][currentY + 1] == true && takenRooms[currentX - 1][currentY] == true) {
+                else if (GcurrentY - 1 >= 0 && GcurrentY + 1 <= 3 && GcurrentX + 1 > 3 && GcurrentX - 1 >= 0) {
+                    if (takenRooms[GcurrentX][GcurrentY - 1] == true && takenRooms[GcurrentX][GcurrentY + 1] == true && takenRooms[GcurrentX - 1][GcurrentY] == true) {
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -842,12 +870,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                 // case up and left are out of bounds
-                else if (currentY - 1 < 0 && currentY + 1 <= 3 && currentX + 1 <= 3 && currentX - 1 < 0) {
-                    if (takenRooms[currentX][currentY + 1] == true && takenRooms[currentX + 1][currentY] == true) {
+                else if (GcurrentY - 1 < 0 && GcurrentY + 1 <= 3 && GcurrentX + 1 <= 3 && GcurrentX - 1 < 0) {
+                    if (takenRooms[GcurrentX][GcurrentY + 1] == true && takenRooms[GcurrentX + 1][GcurrentY] == true) {
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -855,12 +883,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                 // case up and right are out of bounds
-                else if (currentY - 1 < 0 && currentY + 1 <= 3 && currentX + 1 > 3 && currentX - 1 >= 0) {
-                    if (takenRooms[currentX][currentY + 1] == true && takenRooms[currentX - 1][currentY] == true) {
+                else if (GcurrentY - 1 < 0 && GcurrentY + 1 <= 3 && GcurrentX + 1 > 3 && GcurrentX - 1 >= 0) {
+                    if (takenRooms[GcurrentX][GcurrentY + 1] == true && takenRooms[GcurrentX - 1][GcurrentY] == true) {
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -868,12 +896,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                 //case down and left are out of bounds
-                else if (currentY - 1 >= 0 && currentY + 1 > 3 && currentX + 1 <= 3 && currentX - 1 < 0) {
-                    if (takenRooms[currentX][currentY - 1] == true && takenRooms[currentX + 1][currentY] == true) {
+                else if (GcurrentY - 1 >= 0 && GcurrentY + 1 > 3 && GcurrentX + 1 <= 3 && GcurrentX - 1 < 0) {
+                    if (takenRooms[GcurrentX][GcurrentY - 1] == true && takenRooms[GcurrentX + 1][GcurrentY] == true) {
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -881,12 +909,12 @@ function floorGen(floorNum: number) {
                     }
                 }
                 //case down and right are out of bounds
-                else if (currentY - 1 >= 0 && currentY + 1 > 3 && currentX + 1 > 3 && currentX - 1 >= 0) {
-                    if (takenRooms[currentX][currentY - 1] == true && takenRooms[currentX - 1][currentY] == true) {
+                else if (GcurrentY - 1 >= 0 && GcurrentY + 1 > 3 && GcurrentX + 1 > 3 && GcurrentX - 1 >= 0) {
+                    if (takenRooms[GcurrentX][GcurrentY - 1] == true && takenRooms[GcurrentX - 1][GcurrentY] == true) {
                         genLoc.shift();
                         if (genLoc != null) {
-                            currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                            currentY = genLoc[0] % 10;
+                            GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                            GcurrentY = genLoc[0] % 10;
                         }
                     }
                     else {
@@ -894,14 +922,14 @@ function floorGen(floorNum: number) {
                     }
                 }
                 // case all in bounds but full
-            } else if (currentY - 1 >= 0 && currentY + 1 <= 3 && currentX + 1 <= 3 && currentX - 1 >= 0){
-                if (takenRooms[currentX][currentY - 1] == true && takenRooms[currentX][currentY + 1] == true && takenRooms[currentX - 1][currentY] == true && takenRooms[currentX + 1][currentY] == true ){
+            } else if (GcurrentY - 1 >= 0 && GcurrentY + 1 <= 3 && GcurrentX + 1 <= 3 && GcurrentX - 1 >= 0){
+                if (takenRooms[GcurrentX][GcurrentY - 1] == true && takenRooms[GcurrentX][GcurrentY + 1] == true && takenRooms[GcurrentX - 1][GcurrentY] == true && takenRooms[GcurrentX + 1][GcurrentY] == true ){
                 if(genLoc != null){
                 genLoc.shift();
                 }
                 if (genLoc != null){
-                    currentX = (genLoc[0] - genLoc[0] % 10) / 10;
-                    currentY = genLoc[0] % 10;
+                    GcurrentX = (genLoc[0] - genLoc[0] % 10) / 10;
+                    GcurrentY = genLoc[0] % 10;
                 }
                 }
                 else{
@@ -953,25 +981,25 @@ function floorGen(floorNum: number) {
             }
         }
         // checking if direction and its inside the 4x4 floor grid
-        if (currentY - 1 >= 0 && up == true && takenRooms[currentX][currentY - 1] == false) {
-            floorLayout[currentX][currentY - 1] = 1
-            takenRooms[currentX][currentY - 1] = true
-            genLoc.push((currentX * 10) + currentY - 1)
+        if (GcurrentY - 1 >= 0 && up == true && takenRooms[GcurrentX][GcurrentY - 1] == false) {
+            floorLayout[GcurrentX][GcurrentY - 1] = 1
+            takenRooms[GcurrentX][GcurrentY - 1] = true
+            genLoc.push((GcurrentX * 10) + GcurrentY - 1)
         }
-        if (currentY + 1 <= 3 && down == true && takenRooms[currentX][currentY + 1] == false) {
-            floorLayout[currentX][currentY + 1] = 1
-            takenRooms[currentX][currentY + 1] = true
-            genLoc.push((currentX * 10) + currentY + 1)
+        if (GcurrentY + 1 <= 3 && down == true && takenRooms[GcurrentX][GcurrentY + 1] == false) {
+            floorLayout[GcurrentX][GcurrentY + 1] = 1
+            takenRooms[GcurrentX][GcurrentY + 1] = true
+            genLoc.push((GcurrentX * 10) + GcurrentY + 1)
         }
-        if (currentX - 1 >= 0 && left == true && takenRooms[currentX - 1][currentY] == false) {
-            floorLayout[currentX - 1][currentY] = 1
-            takenRooms[currentX - 1][currentY] = true
-            genLoc.push(((currentX - 1) * 10) + currentY)
+        if (GcurrentX - 1 >= 0 && left == true && takenRooms[GcurrentX - 1][GcurrentY] == false) {
+            floorLayout[GcurrentX - 1][GcurrentY] = 1
+            takenRooms[GcurrentX - 1][GcurrentY] = true
+            genLoc.push(((GcurrentX - 1) * 10) + GcurrentY)
         }
-        if (currentX + 1 <= 3 && right == true && takenRooms[currentX + 1][currentY] == false) {
-            floorLayout[currentX + 1][currentY] = 1
-            takenRooms[currentX + 1][currentY] = true
-            genLoc.push(((currentX + 1) * 10) + currentY)
+        if (GcurrentX + 1 <= 3 && right == true && takenRooms[GcurrentX + 1][GcurrentY] == false) {
+            floorLayout[GcurrentX + 1][GcurrentY] = 1
+            takenRooms[GcurrentX + 1][GcurrentY] = true
+            genLoc.push(((GcurrentX + 1) * 10) + GcurrentY)
         }
         newSum = sumFloorLayout(floorLayout);
         genLoc.shift()
@@ -1077,8 +1105,8 @@ function fillRooms(layout: number[][]){
         }
     }
     // Next fill in an empty array with Objects of rooms corresponding to the number in each location
-    for (let a = 0; a <= layout.length - 1; a++) {
-        for (let b = 0; b <= layout[a].length - 1; b++) {
+    for (let a = 0; a < layout.length; a++) {
+        for (let b = 0; b < layout[a].length; b++) {
             // roomFilledArray[i][j] = { tileMap: 0, enemies: 0, chest: false, cleared: true, boss: false, empty: false}
             if (layout[a][b] == 9) {
                 setTileMap(a, b, layout[a][b])
@@ -1088,7 +1116,6 @@ function fillRooms(layout: number[][]){
                 setBoss(a, b, false)
                 setEmpty(a, b, false)
                 setDoors(a, b, layout)
-
             }
             // roomFilledArray[i][j] = { tileMap: 1, enemies: 3, chest: true, cleared: false, boss: false, empty: false}
             if (layout[a][b] == 2) {
@@ -1170,6 +1197,7 @@ function fillRooms(layout: number[][]){
 }
 //when you leave one room and enter another this function will swap out the old room for the new one. this is a wip.
 function swapRooms(currentX: number, currentY: number){
+    tiles.setCurrentTilemap(tilemap`empty`)
     scene.setTileMap(getTileMap(currentX, currentY))
 }
 
