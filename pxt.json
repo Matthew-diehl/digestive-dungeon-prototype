@@ -5,7 +5,12 @@
         "device": "*",
         "tilemaps": "github:microsoft/pxt-tilemaps#v1.12.0",
         "arcade-tile-util": "github:microsoft/arcade-tile-util#v1.0.1",
-        "arcade-block-objects": "github:microsoft/arcade-block-objects#f486ac1d4dcc096b9297174f97f8cdef1576c7ff"
+        "arcade-block-objects": "github:microsoft/arcade-block-objects#f486ac1d4dcc096b9297174f97f8cdef1576c7ff",
+        "Timers": "github:microsoft/arcade-timers#v1.1.0",
+        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.4.1",
+        "arcade-tilemap-a-star": "github:jwunderl/arcade-tilemap-a-star#v0.4.0",
+        "Control": "github:S0m3randomguy/control#4d59722d84a639a38ab19df701397c883f2119c2",
+        "color-coded-tilemap": "*"
     },
     "files": [
         "main.blocks",
@@ -13,7 +18,9 @@
         "README.md",
         "assets.json",
         "tilemap.g.jres",
-        "tilemap.g.ts"
+        "tilemap.g.ts",
+        "images.g.jres",
+        "images.g.ts"
     ],
     "testFiles": [
         "test.ts"

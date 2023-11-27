@@ -1,4 +1,4 @@
-namespace NumProp {
+ namespace NumProp {
     export const enemies = NumProp.create()
 }
 namespace BoolProp {
@@ -12,8 +12,11 @@ namespace BoolProp {
     export const down = BoolProp.create()
 
 }
-namespace AnyProp {
-    export const tileMap = AnyProp.create()
+namespace ImageProp {
+    export const tileMap = ImageProp.create()
+}
+namespace SpriteKind {
+    export const Boss =SpriteKind.create()
 }
 let direction = 0;
 let numOfDirections = 0;
@@ -23,6 +26,9 @@ let startX = 0;
 let takenRooms: boolean[][] = [];
 let floorLayout: number[][] = [];
 let roomFilledArray: blockObject.BlockObject[][] = []
+
+let roomEnemiesLeft: number
+let chestLooted: boolean
 
 roomFilledArray = [
     [
@@ -50,17 +56,14 @@ roomFilledArray = [
         blockObject.create()
     ]
 ]
-let floor = 0;
+let floor = 1;
 let initialValue = 0;
 let numberOfEdgeRooms = 0;
-let rooms = [tiles.createMap(tilemap`level2`)];
-rooms[0] = tiles.createMap(tilemap`room0`);
-rooms[1] = tiles.createMap(tilemap`room4`);
-rooms[2] = tiles.createMap(tilemap`room2`);
-rooms[3] = tiles.createMap(tilemap`room6`);
 let currentRoom: number = null;
-let currentX;
-let currentY;
+let currentX: number;
+let currentY: number;
+let previousX: number;
+let previousY: number;
 
 floorLayout = [
 [
@@ -114,20 +117,70 @@ false,
 false
 ]
 ]
-floorGen(floor);
-fillRooms(floorLayout)
-currentX = startX;
-currentY = startY;
+//start of initial program loading.
+sprites.onDestroyed(SpriteKind.Enemy, function () {
+    roomEnemiesLeft--
+    if (roomEnemiesLeft == 0) {
 
-console.log("Post room filling:")
-for (let i = 0; i <= floorLayout.length - 1; i++) {
-    let message = "";
-    for (let j = 0; j <= floorLayout[i].length - 1; j++) {
-        message = message + floorLayout[i][j].toString() + "\t";
+        blockControl.raiseEvent(1, 0)
     }
-    console.log(message)
-}
-swapRooms(currentX,currentY)
+})
+
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
+    if (controller.A.isPressed()) {
+        tiles.setTileAt(location, sprites.dungeon.chestOpen)
+        chestLooted = true
+        blockControl.raiseEvent(2, 0)
+    }
+})
+
+
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenNorth, function (sprite, location) {
+    previousX = currentX
+    previousY = currentY
+    currentY = currentY - 1
+
+    blockControl.raiseEvent(3, 0)
+
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenSouth, function (sprite, location) {
+    previousX = currentX
+    previousY = currentY
+    currentY = currentY + 1
+
+    game.splash("hi")
+
+    blockControl.raiseEvent(3, 0)
+})
+
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenEast, function (sprite, location) {
+    previousX = currentX
+    previousY = currentY
+    currentX = currentX - 1
+
+    blockControl.raiseEvent(3, 0)
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenWest, function (sprite, location) {
+    previousX = currentX
+    previousY = currentY
+    currentY = currentY + 1
+
+    blockControl.raiseEvent(3, 0)
+})
+let gameStarted = false
+scene.setBackgroundImage(assets.image`temp`)
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (!gameStarted){
+        gameStarted = true
+        scene.setBackgroundImage(assets.image`Empty`)
+        start()
+    }
+})
+
+
+
+
+
 //end of onStart code
 
 
@@ -145,7 +198,7 @@ function getRight(row: number, col: number) {
     return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.right)
 }
 function getTileMap(row: number, col: number) {
-    return blockObject.getAnyProperty(roomFilledArray[row][col], AnyProp.tileMap)
+    return blockObject.getImageProperty(roomFilledArray[row][col], ImageProp.tileMap)
 }
 function getEmpty(row: number, col: number) {
     return blockObject.getBooleanProperty(roomFilledArray[row][col], BoolProp.empty)
@@ -172,26 +225,26 @@ function setCleared(row: number, col: number, cleared: boolean) {
 
 function setTileMap(row: number, col: number, tile: number) {
     switch (tile) {
-        case 1: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`room0`);
+        case 1: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`room1`);
             break;
-        case 2: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 2: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room2`);
             break;
-        case 3: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 3: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room3`);
             break;
-        case 4: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 4: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room4`);
             break;
-        case 5: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 5: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room5`);
             break;
-        case 6: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 6: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room6`);
             break;
-        case 7: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 7: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room7`);
             break;
-        case 8: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 8: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room8`);
             break;
-        case 9: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`room0`);
+        case 9: blockObject.setImageProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`Room9`);
             break;
         default:
-            blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`level9`);
+            blockObject.setAnyProperty(roomFilledArray[row][col], ImageProp.tileMap,assets.image`emptyRoom`);
 
     }
 
@@ -276,6 +329,442 @@ function setChest(row: number, col: number, chest: boolean) {
     blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.chest, chest)
 }
 //end of getters and setters
+
+//start function
+function start(){
+    //scene.setTileMap(assets.image`Room9`)
+    //bossStartSpawn()
+    gameStart()
+    
+}
+
+
+function bossStartSpawn (){
+    tiles.setCurrentTilemap(tilemap`Outside`)
+    let monster = sprites.create(assets.image`Monster`, SpriteKind.Boss)
+    let player = sprites.create(assets.image`Player`, SpriteKind.Player)
+    player.setPosition(128, 170)
+    monster.setPosition(128, 60)
+    scene.cameraFollowSprite(player)
+    controller.moveSprite(player)
+
+    game.onUpdateInterval(5000, function () {
+        if (spriteutils.distanceBetween(player, monster) > 20) {
+
+            monster.follow(player, 20)
+            pause(3000)
+            
+        }
+    })
+}
+
+function gameStart(){
+    let player = sprites.create(assets.image`Player`, SpriteKind.Player)
+    controller.moveSprite(player)
+    floorGen(floor);
+    fillRooms(floorLayout)
+    currentX = startX;
+    currentY = startY;
+    fullRoomLoadSequence(currentX,currentY,player)
+    
+    
+    
+
+    
+}
+function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprite){
+    swapRooms(currentX, currentY)
+    loadRoomTilesEnemies(currentX, currentY)
+    
+    
+    timer.background(function() {
+        chestLooted = false        
+        roomEnemiesLeft = getEnemies(currentX, currentY)
+
+        if (roomEnemiesLeft == 0 || getCleared(currentX, currentY)) {
+            blockControl.raiseEvent(1, 0)
+            
+        }
+    })
+    
+   
+    blockControl.waitForEvent(1, 0)
+    timer.background(function() {
+        setEnemies(currentX, currentY, 0)
+        pause(1000)
+        scene.cameraShake(4, 500)
+        tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestClosed)
+        if (getCleared(currentX, currentY)) {
+            tiles.coverAllTiles(sprites.dungeon.chestClosed, sprites.dungeon.chestOpen)
+            chestLooted = true;
+            blockControl.raiseEvent(2, 0)
+        }
+    })
+    blockControl.waitForEvent(2, 0)
+    setCleared(currentX, currentY, true)
+    unlockRoom(currentX,currentY)
+
+    game.splash("here")
+    blockControl.waitForEvent(3, 0)
+    game.splash("past")
+    if(previousX<currentX){
+        player.setPosition(24, 52)
+    }
+    else if(previousX>currentX){
+        player.setPosition(136, 52)
+    }
+    else if(previousY<currentY){
+        player.setPosition(72, 96)
+    }
+    else{
+        player.setPosition(72, 24)
+    }
+    fullRoomLoadSequence(currentX, currentY, player)
+    
+}
+
+function unlockRoom(currentX:number,currentY:number){
+    pause(1000)
+    scene.cameraShake(4, 500)
+
+    if (getUp(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door0, sprites.dungeon.doorOpenNorth)
+    }
+    if (getDown(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.doorOpenSouth)
+    }
+    if (getRight(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.doorOpenWest)
+    }
+    if (getLeft(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.doorOpenEast)
+    }
+}
+
+
+function loadRoomTilesEnemies(currentX: number, currentY: number){
+    // top right corner
+    scene.setTile(0, img`
+        6 6 6 6 6 c c 6 6 6 6 6 6 6 c f
+        7 7 7 7 7 c 7 7 7 7 7 7 7 c f c
+        7 7 7 7 c c 7 7 7 7 7 7 c c c 6
+        6 6 6 6 c 6 6 6 6 6 6 c c c 7 6
+        c c c c c c c c c c c c c 7 7 6
+        c 6 7 7 7 7 7 7 7 c c c 6 7 7 6
+        c c 6 6 6 6 6 6 c c c c 6 7 7 6
+        c c c c c c c c c c 6 c 6 7 7 6
+        6 6 6 6 6 6 c c c 6 7 c 6 7 7 6
+        6 6 6 6 6 c c c c 6 7 c 6 7 7 c
+        c c c c c c c 6 c 6 7 c 6 7 7 c
+        6 6 6 c c c 6 6 c 6 7 c 6 7 c c
+        c c c c c c 6 6 c 6 7 c 6 c c c
+        6 6 c c 6 c 6 6 c 6 7 c c c 7 6
+        c f c c 6 c 6 6 c 6 6 c 6 7 7 6
+        f c 6 c 6 c 6 6 c 6 c c 6 7 7 6
+    `, true)
+    // top left corner
+    scene.setTile(1, img`
+        f c 6 6 6 6 6 6 6 c c c c 6 6 6 
+        c f c 7 7 7 7 7 7 7 7 c c 7 7 7 
+        6 c c c 7 7 7 7 7 7 7 7 c c 7 7 
+        6 7 c c c 6 6 6 6 6 6 6 6 c 6 6 
+        6 7 7 c c c c c c c c c c c c c 
+        6 7 7 6 c c c 6 7 7 7 7 7 7 6 c 
+        6 7 7 6 c c c c 6 6 6 6 6 6 6 6 
+        6 7 7 6 c 7 c c c c c c c c c c 
+        6 7 7 6 c 7 6 c c c 6 6 6 6 6 6 
+        c 7 7 6 c 7 6 c c c c 6 6 6 6 6 
+        c c c 6 c 7 6 c 6 c c c c c c c 
+        6 7 c c c 7 6 c 6 6 c c c 6 6 6 
+        6 7 7 6 c 7 6 c 6 6 c c c c c c 
+        6 7 7 6 c 7 6 c 6 6 c 6 c c c 6 
+        6 7 7 6 c 6 c c 6 6 c 6 c 6 f c 
+        6 7 7 6 c c c c 6 6 c 6 c 6 c f 
+        `, true)
+    // bottom right corner
+    scene.setTile(2, img`
+        f c 6 c 6 c 6 6 c c c c 6 7 7 6 
+        c f 6 c 6 c 6 6 c c 6 c 6 7 7 6 
+        6 c c c 6 c 6 6 c 6 7 c 6 7 7 6 
+        c c c c c c 6 6 c 6 7 c 6 7 7 6 
+        6 6 6 c c c 6 6 c 6 7 c c c 7 6 
+        c c c c c c c 6 c 6 7 c 6 c c c 
+        6 6 6 6 6 c c c c 6 7 c 6 7 7 c 
+        6 6 6 6 6 6 c c c 6 7 c 6 7 7 6 
+        c c c c c c c c c c 7 c 6 7 7 6 
+        6 6 6 6 6 6 6 6 c c c c 6 7 7 6 
+        c 6 7 7 7 7 7 7 6 c c c 6 7 7 6 
+        c c c c c c c c c c c c c 7 7 6 
+        6 6 c 6 6 6 6 6 6 6 6 c c c 7 6 
+        7 7 c c 7 7 7 7 7 7 7 7 c c c 6 
+        7 7 7 c c 7 7 7 7 7 7 7 7 c f c 
+        6 6 6 c c c c 6 6 6 6 6 6 6 c f 
+        `, true)
+    // bottom left corner
+    scene.setTile(3, img`
+        6 7 7 6 c c 6 c 6 6 c 6 c 6 c f 
+        6 7 7 6 c 6 6 c 6 6 c 6 c c f c 
+        6 7 c c c 7 6 c 6 6 c 6 c c 6 6 
+        c c c 6 c 7 6 c 6 6 c c c c c c 
+        c c 7 6 c 7 6 c 6 6 c c c 6 6 6 
+        c 7 7 6 c 7 6 c 6 c c c c c c c 
+        c 7 7 6 c 7 6 c c c c 6 6 6 6 6 
+        6 7 7 6 c 7 6 c c c 6 6 6 6 6 6 
+        6 7 7 6 c 6 c c c c c c c c c c 
+        6 7 7 6 c c c c 6 6 6 6 6 6 c c 
+        6 7 7 6 c c c 7 7 7 7 7 7 7 6 c 
+        6 7 7 c c c c c c c c c c c c c 
+        6 7 c c c 6 6 6 6 6 6 c 6 6 6 6 
+        6 c c c 7 7 7 7 7 7 c c 7 7 7 7 
+        c f c 7 7 7 7 7 7 7 c 7 7 7 7 7 
+        f c 6 6 6 6 6 6 6 c c 6 6 6 6 6 
+        `, true)
+    // top walls
+    scene.setTile(4, img`
+        6 6 6 c c 6 6 6 6 6 6 c c 6 6 6 
+        7 7 7 7 c 7 7 7 7 7 7 7 c 7 7 7 
+        7 7 7 6 c 7 7 7 7 7 7 7 c 7 7 7 
+        6 6 6 6 c 6 6 6 6 6 6 6 c c 6 6 
+        c c c c c c c c c c c c c c c c 
+        c 6 7 7 7 7 7 6 c 6 7 7 7 7 7 6 
+        c c 6 6 6 6 6 6 c c 6 6 6 6 6 6 
+        c c c c c c c c c c c c c c c c 
+        6 6 6 c 6 6 6 6 6 6 6 6 c 6 6 6 
+        6 6 6 c c 6 6 6 6 6 6 6 c 6 6 6 
+        c c c c c c c c c c c c c c c c 
+        c 6 6 6 6 6 6 c c 6 6 6 6 6 6 c 
+        c c c c c c c c c c c c c c c c 
+        6 6 c c 6 6 6 6 6 6 c c 6 6 6 6 
+        c c c c c c c c c c c c c c c c 
+        c c c c c c c c c c c c c c c c 
+        `, true)
+    // left walls
+    scene.setTile(5, img`
+        6 7 7 6 c 6 6 c 6 6 c c c 6 c c 
+        6 7 7 6 c 7 6 c 6 6 c 6 c 6 c c 
+        6 7 7 c c 7 6 c 6 6 c 6 c 6 c c 
+        c c c c c 7 6 c c c c 6 c 6 c c 
+        c 7 7 6 c 7 6 c 6 6 c 6 c c c c 
+        6 7 7 6 c 7 6 c 6 6 c 6 c c c c 
+        6 7 7 6 c 6 c c 6 6 c 6 c 6 c c 
+        6 7 7 6 c c c c 6 6 c c c 6 c c 
+        6 7 7 6 c 6 6 c 6 6 c c c 6 c c 
+        6 7 7 6 c 7 6 c 6 6 c 6 c 6 c c 
+        6 7 7 6 c 7 6 c 6 6 c 6 c 6 c c 
+        c c c c c 7 6 c 6 c c 6 c 6 c c 
+        c 7 6 6 c 7 6 c c c c 6 c c c c 
+        6 7 7 6 c 7 6 c 6 6 c 6 c c c c 
+        6 7 7 6 c 6 c c 6 6 c 6 c 6 c c 
+        6 7 7 6 c c c c 6 6 c c c 6 c c 
+        `, true)
+    // bottom walls
+    scene.setTile(6, img`
+        c c c c c c c c c c c c c c c c 
+        c c c c c c c c c c c c c c c c 
+        6 6 6 6 c c 6 6 6 6 6 6 c c 6 6 
+        c c c c c c c c c c c c c c c c 
+        c 6 6 6 6 6 6 c c 6 6 6 6 6 6 c 
+        c c c c c c c c c c c c c c c c 
+        6 6 6 c 6 6 6 6 6 6 6 c c 6 6 6 
+        6 6 6 c 6 6 6 6 6 6 6 6 c 6 6 6 
+        c c c c c c c c c c c c c c c c 
+        6 6 6 6 6 6 c c 6 6 6 6 6 6 c c 
+        6 7 7 7 7 7 6 c 6 7 7 7 7 7 6 c 
+        c c c c c c c c c c c c c c c c 
+        6 6 c c 6 6 6 6 6 6 6 c 6 6 6 6 
+        7 7 7 c 7 7 7 7 7 7 7 c 6 7 7 7 
+        7 7 7 c 7 7 7 7 7 7 7 c 7 7 7 7 
+        6 6 6 c c 6 6 6 6 6 6 c c 6 6 6 
+        `, true)
+    // right walls
+    scene.setTile(7, img`
+        c c 6 c c c 6 6 c c c c 6 7 7 6 
+        c c 6 c 6 c 6 6 c c 6 c 6 7 7 6 
+        c c c c 6 c 6 6 c 6 7 c 6 7 7 6 
+        c c c c 6 c c c c 6 7 c 6 6 7 c 
+        c c 6 c 6 c c 6 c 6 7 c c c c c 
+        c c 6 c 6 c 6 6 c 6 7 c 6 7 7 6 
+        c c 6 c 6 c 6 6 c 6 7 c 6 7 7 6 
+        c c 6 c c c 6 6 c 6 6 c 6 7 7 6 
+        c c 6 c c c 6 6 c c c c 6 7 7 6 
+        c c 6 c 6 c 6 6 c c 6 c 6 7 7 6 
+        c c c c 6 c 6 6 c 6 7 c 6 7 7 6 
+        c c c c 6 c 6 6 c 6 7 c 6 7 7 c 
+        c c 6 c 6 c c c c 6 7 c c c c c 
+        c c 6 c 6 c 6 6 c 6 7 c c 7 7 6 
+        c c 6 c 6 c 6 6 c 6 7 c 6 7 7 6 
+        c c 6 c c c 6 6 c 6 6 c 6 7 7 6 
+        `, true)
+    // top door
+    scene.setTile(8, img`
+        7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+        7 7 4 4 4 4 4 4 4 4 4 4 4 4 7 7 
+        7 4 4 4 4 4 4 4 4 4 4 4 4 4 4 7 
+        4 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 
+        4 1 4 1 4 1 1 1 4 1 1 1 4 1 1 4 
+        4 1 4 1 4 1 4 1 4 1 4 1 4 1 4 4 
+        4 1 1 4 4 1 1 1 4 1 1 1 4 1 4 4 
+        4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 4 1 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 1 1 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 4 1 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 1 1 1 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 
+        4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 
+        `, false)
+    // left door
+    scene.setTile(9, img`
+        3 3 3 c c c c c c c c c c c c c 
+        3 3 c c c c c c c c c c c c c c 
+        3 c c c c c c c c c c c c c c c 
+        3 1 1 c c c c c c c c c c c c c 
+        3 1 c 1 c 1 1 1 c 1 1 1 c 1 1 c 
+        3 1 c 1 c 1 c 1 c 1 c 1 c 1 c c 
+        3 1 1 c c 1 1 1 c 1 1 1 c 1 c c 
+        3 c c c c c c c c c c c c c c c 
+        3 c c c c c c c c c c c c c c c 
+        3 c c c c c c 1 1 c c c c c c c 
+        3 c c c c c 1 c c 1 c c c c c c 
+        3 c c c c c c c 1 c c c c c c c 
+        3 c c c c c c 1 c c c c c c c c 
+        3 c c c c c 1 1 1 1 c c c c c c 
+        3 3 c c c c c c c c c c c c c c 
+        3 3 3 c c c c c c c c c c c c c 
+        `, false)
+    // right door
+    scene.setTile(10, img`
+        a a a a a a a a a a a a a 3 3 3 
+        a a a a a a a a a a a a a a 3 3 
+        a a a a a a a a a a a a a a a 3 
+        a 1 1 a a a a a a a a a a a a 3 
+        a 1 a 1 a 1 1 1 a 1 1 1 a 1 1 3 
+        a 1 a 1 a 1 a 1 a 1 a 1 a 1 a 3 
+        a 1 1 a a 1 1 1 a 1 1 1 a 1 a 3 
+        a a a a a a a a a a a a a a a 3 
+        a a a a a a a 1 1 1 a a a a a 3 
+        a a a a a a a a a a 1 a a a a 3 
+        a a a a a a a a 1 1 a a a a a 3 
+        a a a a a a a a a a 1 a a a a 3 
+        a a a a a a a 1 1 1 a a a a a 3 
+        a a a a a a a a a a a a a a a 3 
+        a a a a a a a a a a a a a a 3 3 
+        a a a a a a a a a a a a a 3 3 3 
+        `, false)
+    // bottom door
+    scene.setTile(11, img`
+        6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+        6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+        6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+        6 1 1 6 6 6 6 6 6 6 6 6 6 6 6 6 
+        6 1 6 1 6 1 1 1 6 1 1 1 6 1 1 6 
+        6 1 6 1 6 1 6 1 6 1 6 1 6 1 6 6 
+        6 1 1 6 6 1 1 1 6 1 1 1 6 1 6 6 
+        6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+        6 6 6 6 6 6 6 1 6 6 1 6 6 6 6 6 
+        6 6 6 6 6 6 6 1 6 6 1 6 6 6 6 6 
+        6 6 6 6 6 6 6 1 1 1 1 6 6 6 6 6 
+        6 6 6 6 6 6 6 6 6 6 1 6 6 6 6 6 
+        6 6 6 6 6 6 6 6 6 6 1 6 6 6 6 6 
+        7 6 6 6 6 6 6 6 6 6 6 6 6 6 6 7 
+        7 7 6 6 6 6 6 6 6 6 6 6 6 6 7 7 
+        7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+        `, false)
+    // normal floor
+    scene.setTile(12, img`
+        b d d d d d d d d d d d d d d c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        c c c c c c c c c c c c c c c a 
+        `, false)
+    for (let index = 0; index < getEnemies(currentX,currentY); index++) {
+        let mySprite = sprites.create(img`
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . . . . b b 5 d 1 f 5 5 d f . . 
+            . . . . b 5 5 1 f f 5 d 4 c . . 
+            . . . . b 5 5 d f b d d 4 4 . . 
+            . b b b d 5 5 5 5 5 4 4 4 4 4 b 
+            b d d d b b d 5 5 4 4 4 4 4 b . 
+            b b d 5 5 5 b 5 5 5 5 5 5 b . . 
+            c d c 5 5 5 5 d 5 5 5 5 5 5 b . 
+            c b d c d 5 5 b 5 5 5 5 5 5 b . 
+            . c d d c c b d 5 5 5 5 5 d b . 
+            . . c b d d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Enemy)
+        scene.placeOnRandomTile(mySprite, 13)
+    }
+    // floor with enemy
+    scene.setTile(13, img`
+        b d d d d d d d d d d d d d d c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        d b b b b b b b b b b b b b b c 
+        c c c c c c c c c c c c c c c a 
+        `, false)
+    // floor w/ chest
+    scene.setTile(14,assets.image`Locked`, false)
+    // floor w/ hole
+    scene.setTile(15, img`
+        c c c c c c c c c c c c c c c c 
+        b b b c c c b b b b c c c c c d 
+        f f c c c c f f f f f c c c f f 
+        c c f f f f f c c c f f f f f c 
+        f f f c c c f f f f f f c c f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        `, false)
+
+    if(!getUp(currentX,currentY)){
+        tiles.coverAllTiles(tiles.util.door0, sprites.dungeon.greenOuterNorth0)
+    }
+    if (!getDown(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.greenOuterSouth1)
+    }
+    if (!getRight(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.greenOuterWest0)
+    }
+    if (!getLeft(currentX, currentY)) {
+        tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.greenOuterEast0)
+    }
+}
 
 
 
@@ -681,11 +1170,7 @@ function fillRooms(layout: number[][]){
 }
 //when you leave one room and enter another this function will swap out the old room for the new one. this is a wip.
 function swapRooms(currentX: number, currentY: number){
-    if(currentRoom == null){
-        tiles.setCurrentTilemap(getTileMap(currentX, currentY))       
-    }
-    //pick up here matt to swap to all other rooms correctly!!!
-
+    scene.setTileMap(getTileMap(currentX, currentY))
 }
 
 
