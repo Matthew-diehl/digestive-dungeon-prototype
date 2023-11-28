@@ -10,7 +10,9 @@
         "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.4.1",
         "arcade-tilemap-a-star": "github:jwunderl/arcade-tilemap-a-star#v0.4.0",
         "Control": "github:S0m3randomguy/control#4d59722d84a639a38ab19df701397c883f2119c2",
-        "color-coded-tilemap": "*"
+        "color-coded-tilemap": "*",
+        "Inventory": "github:UnsignedArduino/Inventory#v1.1.1",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2"
     },
     "files": [
         "main.blocks",

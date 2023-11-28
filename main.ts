@@ -1,5 +1,11 @@
  namespace NumProp {
     export const enemies = NumProp.create()
+    export const damage = NumProp.create()
+}
+namespace SpriteKind {
+    export const hurt = SpriteKind.create()
+    export const item = SpriteKind.create()
+    export const weapon = SpriteKind.create()
 }
 namespace BoolProp {
     export const cleared = BoolProp.create()
@@ -15,10 +21,13 @@ namespace BoolProp {
 namespace AnyProp {
     export const tileMap = AnyProp.create()
 }
+namespace ImageProp {
+    export const image = ImageProp.create()
+}
 namespace SpriteKind {
     export const Boss =SpriteKind.create()
 }
-let direction = 0;
+let directionOfRoomGen = 0;
 let numOfDirections = 0;
 let genLoc: number[] = [];
 let startY = 0;
@@ -69,6 +78,31 @@ let goingUp: boolean;
 let goingDown: boolean;
 let goingRight: boolean;
 let goingLeft: boolean;
+
+//Movement variables
+let weapon_drop: Sprite = null
+let mySprite3: Sprite = null
+let last_inventory_select = 0
+let last_toolbar_select = 0
+let cursor_in_inventory = false
+let in_inventory = false
+let item_drop: Sprite = null
+let projectile4: Sprite = null
+let Projectile3: Sprite = null
+let projectile2: Sprite = null
+let projectile: Sprite = null
+let inventory: Inventory.Inventory = null
+let item: Inventory.Item = null
+let toolbar: Inventory.Toolbar = null
+let direction = 2
+let weapon_labels: string[] = []
+let weaponSprites: blockObject.BlockObject[] = []
+let all_weapons: Image[] = []
+let all_labels: string[] = []
+let all_items: Image[] = []
+let myEnemy: Sprite = null
+let mySprite: Sprite = null
+let menuOpen: boolean = false
 
 floorLayout = [
 [
@@ -128,6 +162,102 @@ sprites.onDestroyed(SpriteKind.Enemy, function () {
     if (roomEnemiesLeft == 0) {
 
         blockControl.raiseEvent(1, 0)
+    }
+})
+
+all_items = [img`
+    . . . . c c c b b b b b . . . . 
+    . . c c b 4 4 4 4 4 4 b b b . . 
+    . c c 4 4 4 4 4 5 4 4 4 4 b c . 
+    . e 4 4 4 4 4 4 4 4 4 5 4 4 e . 
+    e b 4 5 4 4 5 4 4 4 4 4 4 4 b c 
+    e b 4 4 4 4 4 4 4 4 4 4 5 4 4 e 
+    e b b 4 4 4 4 4 4 4 4 4 4 4 b e 
+    . e b 4 4 4 4 4 5 4 4 4 4 b e . 
+    8 7 e e b 4 4 4 4 4 4 b e e 6 8 
+    8 7 2 e e e e e e e e e e 2 7 8 
+    e 6 6 2 2 2 2 2 2 2 2 2 2 6 c e 
+    e c 6 7 6 6 7 7 7 6 6 7 6 c c e 
+    e b e 8 8 c c 8 8 c c c 8 e b e 
+    e e b e c c e e e e e c e b e e 
+    . e e b b 4 4 4 4 4 4 4 4 e e . 
+    . . . c c c c c e e e e e . . . 
+    `]
+all_labels = ["Burger"]
+all_weapons = [img`
+    . . . . . . b b b b . . . . . . 
+    . . . . . . b 4 4 4 b . . . . . 
+    . . . . . . b b 4 4 4 b . . . . 
+    . . . . . b 4 b b b 4 4 b . . . 
+    . . . . b d 5 5 5 4 b 4 4 b . . 
+    . . . . b 3 2 3 5 5 4 e 4 4 b . 
+    . . . b d 2 2 2 5 7 5 4 e 4 4 e 
+    . . . b 5 3 2 3 5 5 5 5 e e e e 
+    . . b d 7 5 5 5 3 2 3 5 5 e e e 
+    . . b 5 5 5 5 5 2 2 2 5 5 d e e 
+    . b 3 2 3 5 7 5 3 2 3 5 d d e 4 
+    . b 2 2 2 5 5 5 5 5 5 d d e 4 . 
+    b d 3 2 d 5 5 5 d d d 4 4 . . . 
+    b 5 5 5 5 d d 4 4 4 4 . . . . . 
+    4 d d d 4 4 4 . . . . . . . . . 
+    4 4 4 4 . . . . . . . . . . . . 
+    `, img`
+    4 4 4 . . 4 4 4 4 4 . . . . . . 
+    4 5 5 4 4 5 5 5 5 5 4 4 . . . . 
+    b 4 5 5 1 5 1 1 1 5 5 5 4 . . . 
+    . b 5 5 5 5 1 1 5 5 1 1 5 4 . . 
+    . b d 5 5 5 5 5 5 5 5 1 1 5 4 . 
+    b 4 5 5 5 5 5 5 5 5 5 5 1 5 4 . 
+    c d 5 5 5 5 5 5 5 5 5 5 5 5 5 4 
+    c d 4 5 5 5 5 5 5 5 5 5 5 1 5 4 
+    c 4 5 5 5 d 5 5 5 5 5 5 5 5 5 4 
+    c 4 d 5 4 5 d 5 5 5 5 5 5 5 5 4 
+    . c 4 5 5 5 5 d d d 5 5 5 5 5 b 
+    . c 4 d 5 4 5 d 4 4 d 5 5 5 4 c 
+    . . c 4 4 d 4 4 4 4 4 d d 5 d c 
+    . . . c 4 4 4 4 4 4 4 4 5 5 5 4 
+    . . . . c c b 4 4 4 b b 4 5 4 4 
+    . . . . . . c c c c c c b b 4 . 
+    `]
+weaponSprites = [blockObject.create(), blockObject.create()]
+for (let index = 0; index <= all_weapons.length - 1; index++) {
+    SetSprite(index, all_weapons[index])
+    setDamage(index, 4)
+}
+weapon_labels = ["pizza", "lemon"]
+
+sprites.onOverlap(SpriteKind.Player, SpriteKind.weapon, function (sprite, otherSprite) {
+    for (let index = 0; index <= all_weapons.length - 1; index++) {
+        for (let item of toolbar.get_items()) {
+            if (item.image == all_weapons[index]) {
+                if (toolbar.get_items() != []) {
+                    toolbar.set_items([])
+                }
+                mySprite3 = sprites.create(all_weapons[index], SpriteKind.weapon)
+                spawn_weapon(mySprite3)
+                pause(100)
+                break;
+            }
+        }
+        if (otherSprite.image.equals(all_weapons[index])) {
+            if (add_weapon([Inventory.create_item(weapon_labels[index], all_weapons[index])])) {
+                sprites.destroy(otherSprite)
+                break;
+            }
+        }
+    }
+})
+
+
+
+sprites.onOverlap(SpriteKind.Player, SpriteKind.item, function (sprite, otherSprite) {
+    for (let index = 0; index <= all_items.length - 1; index++) {
+        if (otherSprite.image.equals(all_items[index])) {
+            if (add_item([Inventory.create_item(all_labels[index], all_items[index])])) {
+                sprites.destroy(otherSprite)
+                break;
+            }
+        }
     }
 })
 
@@ -239,7 +369,16 @@ function getBoss(row: number, col: number) {
 function getEnemies(row: number, col: number) {
     return blockObject.getNumberProperty(roomFilledArray[row][col], NumProp.enemies)
 }
+function getDamage(index: number){
+    return blockObject.getNumberProperty(weaponSprites[index], NumProp.damage)
+}
 // setters
+function setDamage(index: number, damage: number) {
+    blockObject.setNumberProperty(weaponSprites[index], NumProp.damage, damage)
+}
+function SetSprite(index: number, image2: Image) {
+    blockObject.setImageProperty(weaponSprites[index], ImageProp.image, image2)
+}
 function setEmpty(row: number, col: number, empty: boolean) {
     blockObject.setBooleanProperty(roomFilledArray[row][col], BoolProp.empty, empty)
 }
@@ -384,8 +523,34 @@ function bossStartSpawn (){
 }
 
 function gameStart(){
-    let player = sprites.create(assets.image`Player`, SpriteKind.Player)
-    controller.moveSprite(player)
+    let player = sprites.create(assets.image`up arrow`, SpriteKind.Player)
+    controller.moveSprite(player, 100, 100)
+    let statusbar = statusbars.create(40, 10, StatusBarKind.Health)
+    statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+    statusbar.setBarBorder(2, 15)
+    statusbar.left = 30
+    statusbar.bottom = 112
+
+    //add inventory and toolbar
+    make_toolbar()
+    Make_inventory()
+    controller.anyButton.onEvent(ControllerButtonEvent.Pressed, function () {
+        inventory.setFlag(SpriteFlag.Invisible, true)
+        menuOpen = false
+    })
+
+    controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
+        if(!menuOpen){
+            inventory.setFlag(SpriteFlag.Invisible, false)
+            menuOpen = true
+        }
+        else {
+            inventory.setFlag(SpriteFlag.Invisible, true)
+            menuOpen = false
+        }
+    })
+
+    //floor and room gen
     floorGen(floor);
     fillRooms(floorLayout)
     GcurrentX = startX;
@@ -679,34 +844,34 @@ function floorGen(floorNum: number) {
             }
         }
         while (k < numOfDirections) {
-            direction = randint(1, 4)
+            directionOfRoomGen = randint(1, 4)
             // up
-            if (direction == 1 && up == false) {
+            if (directionOfRoomGen == 1 && up == false) {
                 up = true
                 numOfDirections += -1
             } else {
-                direction = randint(1, 4)
+                directionOfRoomGen = randint(1, 4)
             }
             // down
-            if (direction == 2 && down == false) {
+            if (directionOfRoomGen == 2 && down == false) {
                 down = true
                 numOfDirections += -1
             } else {
-                direction = randint(1, 4)
+                directionOfRoomGen = randint(1, 4)
             }
             // left
-            if (direction == 3 && left == false) {
+            if (directionOfRoomGen == 3 && left == false) {
                 left = true
                 numOfDirections += -1
             } else {
-                direction = randint(1, 4)
+                directionOfRoomGen = randint(1, 4)
             }
             // right
-            if (direction == 4 && right == false) {
+            if (directionOfRoomGen == 4 && right == false) {
                 right = true
                 numOfDirections += -1
             } else {
-                direction = randint(1, 4)
+                directionOfRoomGen = randint(1, 4)
             }
         }
         // checking if direction and its inside the 4x4 floor grid
@@ -941,4 +1106,91 @@ function sumFloorLayout(layout: number[][]) {
         }
     }
     return sum
+}
+
+//movement and inventory functions
+
+function make_toolbar() {
+    toolbar = Inventory.create_toolbar([], 1)
+    toolbar.setFlag(SpriteFlag.RelativeToCamera, true)
+    toolbar.left = 4
+    toolbar.bottom = scene.screenHeight() - 4
+    toolbar.z = 50
+}
+
+function Make_inventory() {
+    inventory = Inventory.create_inventory([], 32)
+    inventory.setFlag(SpriteFlag.RelativeToCamera, true)
+    inventory.setFlag(SpriteFlag.Invisible, true)
+    inventory.left = 4
+    inventory.top = 4
+    inventory.z = 50
+}
+
+function add_item(item_in_list: Inventory.Item[]) {
+    for (let item of inventory.get_items()) {
+        if (item.get_image().equals(item_in_list[0].get_image())) {
+            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                item.set_text(ItemTextAttribute.Tooltip, "2")
+            } else {
+                item.set_text(ItemTextAttribute.Tooltip, convertToText(parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + 1))
+            }
+            inventory.update()
+            return true
+        }
+    }
+    if (inventory.get_items().length < inventory.get_number(InventoryNumberAttribute.MaxItems)) {
+        inventory.get_items().push(item_in_list[0])
+        item_in_list[0].set_text(ItemTextAttribute.Tooltip, "")
+        inventory.update()
+        return true
+    }
+    return false
+}
+
+function add_weapon(item_in_list: Inventory.Item[]) {
+    for (let item of toolbar.get_items()) {
+        if (item.get_image().equals(item_in_list[0].get_image())) {
+            if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+                item.set_text(ItemTextAttribute.Tooltip, "2")
+            } else {
+                item.set_text(ItemTextAttribute.Tooltip, convertToText(parseFloat(item.get_text(ItemTextAttribute.Tooltip)) + 1))
+            }
+            toolbar.update()
+            return true
+        }
+    }
+    if (toolbar.get_items().length < toolbar.get_number(ToolbarNumberAttribute.MaxItems)) {
+        toolbar.get_items().push(item_in_list[0])
+        item_in_list[0].set_text(ItemTextAttribute.Tooltip, "")
+        toolbar.update()
+        return true
+    }
+    return false
+}
+
+function spawn_weapon(weapon_Sprite: Sprite) {
+    if (mySprite.y < 60) {
+        weapon_Sprite.setPosition(mySprite.x, mySprite.y + 30)
+    } else if (mySprite.y > 60) {
+        weapon_Sprite.setPosition(mySprite.x, mySprite.y - 30)
+    }
+}
+
+function remove_item_from_toolbar(index: number) {
+    item = toolbar.get_items()[index]
+    if (!(item)) {
+        return [][0]
+    }
+    if (item.get_text(ItemTextAttribute.Tooltip) == "") {
+        if (toolbar.get_items().removeAt(0)) {
+
+        }
+    } else if (item.get_text(ItemTextAttribute.Tooltip) == "2") {
+        item.set_text(ItemTextAttribute.Tooltip, "")
+    } else {
+        item.set_text(ItemTextAttribute.Tooltip, convertToText(parseFloat(item.get_text(ItemTextAttribute.Tooltip)) - 1))
+    }
+    toolbar.update()
+    return Inventory.create_item(item.get_text(ItemTextAttribute.Name), item.get_image())
 }
