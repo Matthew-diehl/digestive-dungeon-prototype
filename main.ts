@@ -535,6 +535,7 @@ function bossStartSpawn (){
 function gameStart(){
     let player = sprites.create(assets.image`up arrow`, SpriteKind.Player)
     controller.moveSprite(player, 100, 100)
+    scene.cameraFollowSprite(player)
     // basic movements
     forever(function () {
         while (controller.right.isPressed()) {
