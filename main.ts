@@ -177,7 +177,6 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
 sprites.onDestroyed(SpriteKind.Enemy, function () {
     roomEnemiesLeft--
     if (roomEnemiesLeft == 0) {
-
         blockControl.raiseEvent(1, 0)
     }
 })
@@ -320,7 +319,7 @@ scene.onOverlapTile(SpriteKind.Player,  tiles.util.door6, function (sprite, loca
 })
 scene.onOverlapTile(SpriteKind.Player, tiles.util.door9, function (sprite, location) {
     if(getCleared(GcurrentX,GcurrentY)){
-    GcurrentY = GcurrentX + 1
+    GcurrentX = GcurrentX + 1
     goingUp = false
     goingDown = false
     goingLeft = false
@@ -1721,10 +1720,21 @@ function gameStart(){
 
     //floor and room gen
     floorGen(floor);
+    let floorCleared = false
     fillRooms(floorLayout)
+    console.log("post room filling:")
+    for (let i = 0; i <= floorLayout.length - 1; i++) {
+        let message = "";
+        for (let j = 0; j <= floorLayout[i].length - 1; j++) {
+            message = message + floorLayout[i][j].toString() + "\t";
+        }
+        console.log(message)
+    }
     GcurrentX = startX;
     GcurrentY = startY;
+
     fullRoomLoadSequence(GcurrentX,GcurrentY,player)
+    
 
     
     
@@ -1735,14 +1745,14 @@ function gameStart(){
     
 }
 function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprite){
+    console.log("X: "+ GcurrentX + " Y: " + GcurrentY)
     swapRooms(GcurrentX, GcurrentY)
     //game.splash("up " + getUp(currentX, currentY) + " down " + getDown(currentX, currentY) + " right " + getRight(currentX, currentY) + " left " + getLeft(currentX, currentY))
     loadRoomTilesEnemies(GcurrentX, GcurrentY)
-    
-    
+    let roomUnlocked = false
+    roomEnemiesLeft = getEnemies(currentX, currentY)
+    chestLooted = false
     timer.background(function() {
-        chestLooted = false        
-        roomEnemiesLeft = getEnemies(currentX, currentY)
         if (roomEnemiesLeft == 0 || getCleared(currentX, currentY)) {
             
             blockControl.raiseEvent(1, 0)
@@ -1753,50 +1763,56 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
     
     
     blockControl.waitForEvent(1, 0)
-    timer.background(function() {
-        scene.onOverlapTile(SpriteKind.Player, assets.tile`ChestLocked`, function (sprite, location) {
-            tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestOpen)
-            chestLooted = true
-            blockControl.raiseEvent(2, 0)
-            
-        })
-        setEnemies(currentX, currentY, 0)
-        pause(1000)
-        if(getChest(currentX, currentY)){
-        scene.cameraShake(4, 500)
-        tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestClosed)
-        if (getCleared(currentX, currentY)) {
-            tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestOpen)
-            chestLooted = true;
-            blockControl.raiseEvent(2, 0)
-        }
-        }
-        else{
-            blockControl.raiseEvent(2,0)
+    blockControl.onEvent(2, 0, function () {
+        if(!roomUnlocked){
+        setCleared(currentX, currentY, true)
+        unlockRoom(currentX, currentY)
+        roomUnlocked = true;
         }
     })
-    blockControl.waitForEvent(2, 0)
-    setCleared(currentX, currentY, true)
-    unlockRoom(currentX,currentY)
 
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`ChestLocked`, function (sprite, location) {
+        if(!chestLooted && roomEnemiesLeft == 0) {
+            tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestOpen)
+            chestLooted = true
+            blockControl.raiseEvent(2, 0)  
+        }
+    })  
+
+    setEnemies(currentX, currentY, 0)
+    pause(1000)
+    tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestClosed)
+    if (getChest(currentX, currentY) && chestLooted == false) {
+        scene.cameraShake(4, 500)
+    }
+    else if(getEnemies(currentX,currentY) == 0){
+        blockControl.raiseEvent(2,0)
+    }
+    if (getCleared(currentX, currentY)) {
+        tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestOpen)
+        chestLooted = true;
+        blockControl.raiseEvent(2, 0)
+    }
     
-    blockControl.waitForEvent(3, 0)
     
-    if(goingUp){
-        player.setPosition(72, 96)
-    }
-    else if(goingDown){
-        player.setPosition(72, 24)
-    }
-    else if(goingRight){
-        player.setPosition(24, 52)
-    }
-    else{
-        player.setPosition(136, 52)
-        
-    }
-    fullRoomLoadSequence(GcurrentX, GcurrentY, player)
-    
+
+    blockControl.onEvent(3, 0, function() {
+        if (goingUp) {
+            player.setPosition(72, 96)
+        }
+        else if (goingDown) {
+            player.setPosition(72, 24)
+        }
+        else if (goingRight) {
+            player.setPosition(24, 52)
+        }
+        else {
+            player.setPosition(136, 52)
+
+        }
+        tiles.destroySpritesOfKind(SpriteKind._TileSprite)
+        fullRoomLoadSequence(GcurrentX, GcurrentY, player)
+    })
 }
 
 function unlockRoom(currentX:number,currentY:number){
