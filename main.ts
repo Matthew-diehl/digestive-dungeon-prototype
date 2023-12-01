@@ -101,7 +101,6 @@ let all_weapons: Image[] = []
 let all_labels: string[] = []
 let all_items: Image[] = []
 let myEnemy: Sprite = null
-let mySprite: Sprite = null
 let menuOpen: boolean = false
 let playerMaxHealth = 3
 let playerDamage = 100/playerMaxHealth +1
@@ -397,23 +396,23 @@ function setCleared(row: number, col: number, cleared: boolean) {
 
 function setTileMap(row: number, col: number, tile: number) {
     switch (tile) {
-        case 1: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap9`);
+        case 1: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap9`);
             break;
-        case 2: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap2`);
+        case 2: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap2`);
             break;
-        case 3: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap3`);
+        case 3: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap3`);
             break;
-        case 4: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap4`);
+        case 4: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap4`);
             break;
-        case 5: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap5`);
+        case 5: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap5`);
             break;
-        case 6: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap6`);
+        case 6: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap6`);
             break;
-        case 7: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap7`);
+        case 7: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap7`);
             break;
-        case 8: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap8`);
+        case 8: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap8`);
             break;
-        case 9: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`Tilemap9`);
+        case 9: blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap,tilemap`FinalTilemap9`);
             break;
         default:
             blockObject.setAnyProperty(roomFilledArray[row][col], AnyProp.tileMap, tilemap`tilemapExample`);
@@ -1821,19 +1820,27 @@ function unlockRoom(currentX:number,currentY:number){
 
     if (getUp(currentX, currentY)) {
         tiles.setWallAt(tiles.getTileLocation(4, 0), false)
-        tiles.coverAllTiles(tiles.util.door0, sprites.dungeon.doorOpenNorth)
+        tiles.setWallAt(tiles.getTileLocation(5, 0), false)
+        tiles.coverAllTiles(tiles.util.door0, assets.tile`TopDoorOpenLeft`)
+        tiles.coverAllTiles(tiles.util.door5, assets.tile`TopDoorOpenRight`)
     }
     if (getDown(currentX, currentY)) {
         tiles.setWallAt(tiles.getTileLocation(4, 7), false)
-        tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.doorOpenSouth)
+        tiles.setWallAt(tiles.getTileLocation(5, 7), false)
+        tiles.coverAllTiles(tiles.util.door15, assets.tile`BottomDoorOpenRight`)
+        tiles.coverAllTiles(tiles.util.door10, assets.tile`BottomDoorOpenLeft`)
     }
     if (getRight(currentX, currentY)) {
         tiles.setWallAt(tiles.getTileLocation(9, 3), false)
-        tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.doorOpenEast)
+        tiles.setWallAt(tiles.getTileLocation(9, 4), false)
+        tiles.coverAllTiles(tiles.util.door9, assets.tile`RightDoorOpenBottom`)
+        tiles.coverAllTiles(tiles.util.door12, assets.tile`RightDoorOpenTop`)
     }
     if (getLeft(currentX, currentY)) { 
         tiles.setWallAt(tiles.getTileLocation(0, 3), false)
-        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.doorOpenWest)
+        tiles.setWallAt(tiles.getTileLocation(0, 4), false)
+        tiles.coverAllTiles(tiles.util.door6, assets.tile`LeftDoorOpenTop`)
+        tiles.coverAllTiles(tiles.util.door3, assets.tile`LeftDoorOpenBottom`)
     }
 }
 
@@ -1863,33 +1870,50 @@ function loadRoomTilesEnemies(currentX: number, currentY: number){
         statusbar2.attachToSprite(myEnemy)
         statusbar2.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
         statusbar2.setBarBorder(1, 15)
-        tiles.placeOnRandomTile(myEnemy, sprites.dungeon.floorDark2)
+        tiles.placeOnRandomTile(myEnemy, assets.tile`FloorTile`)
     }
 
     if(!getUp(currentX,currentY)){
-        tiles.coverAllTiles(tiles.util.door0, sprites.dungeon.greenOuterNorth0)
+        tiles.coverAllTiles(tiles.util.door0, assets.tile`HorizontalWall`)
+        tiles.coverAllTiles(tiles.util.door5, assets.tile`HorizontalWall`)
     }
     else{
-        tiles.coverAllTiles(tiles.util.door0, sprites.dungeon.doorClosedNorth)
+        tiles.coverAllTiles(tiles.util.door0, assets.tile`TopDoorClosedLeft`)
+        tiles.coverAllTiles(tiles.util.door5, assets.tile`TopDoorClosedRight`)
     }
     if (!getDown(currentX, currentY)) {
-        tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.greenOuterSouth1)
+        tiles.coverAllTiles(tiles.util.door15, assets.tile`HorizontalWall`)
+        tiles.coverAllTiles(tiles.util.door10, assets.tile`HorizontalWall`)
     }
     else{
-        tiles.coverAllTiles(tiles.util.door15, sprites.dungeon.doorClosedSouth)
+        tiles.coverAllTiles(tiles.util.door15, assets.tile`BottomDoorClosedRight`)
+        tiles.coverAllTiles(tiles.util.door10, assets.tile`BottomDoorClosedLeft`)
     }
     if (!getRight(currentX, currentY)) {
-        tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.greenOuterEast0)
+        tiles.coverAllTiles(tiles.util.door9, assets.tile`VerticalWall`)
+        tiles.coverAllTiles(tiles.util.door12, assets.tile`VerticalWall`)
     }  
     else{
-        tiles.coverAllTiles(tiles.util.door9, sprites.dungeon.doorClosedEast)
+        tiles.coverAllTiles(tiles.util.door9, assets.tile`RightDoorClosedBottom`)
+        tiles.coverAllTiles(tiles.util.door12, assets.tile`RightDoorClosedTop`)
+
     } 
     if (!getLeft(currentX, currentY)) {
-        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.greenOuterWest0)
+        tiles.coverAllTiles(tiles.util.door6, assets.tile`VerticalWall`)
+        tiles.coverAllTiles(tiles.util.door3, assets.tile`VerticalWall`)
     }
     else{
-        tiles.coverAllTiles(tiles.util.door6, sprites.dungeon.doorClosedWest)
+        tiles.coverAllTiles(tiles.util.door6, assets.tile`LeftDoorClosedTop`)
+        tiles.coverAllTiles(tiles.util.door3, assets.tile`LeftDoorClosedBottom`)
     }
+
+    
+
+    
+
+    
+
+    
 }
 
 
