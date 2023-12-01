@@ -28,12 +28,6 @@
         "tilemapTile": true,
         "displayName": "FloorTile"
     },
-    "tile32": {
-        "data": "hwQQABAAAADDzDzMzMzMPExEzKqqTKTMPEPMqqpMRMw8M8yqqkxEPDwzzKqqTEQ8PDPMqqpM1D08M8ysqkxN3DwzocqqTETcPDOhyqpM3d08M8ysqkz93zwzzKqqTN3dPDPMqqpMRDw8M8yqqkxEPDxDzKqqTETMTETMqqpMpMzDzDzMzMzMPA==",
-        "mimeType": "image/x-mkcd-f4",
-        "tilemapTile": true,
-        "displayName": "ChestOpen"
-    },
     "tile33": {
         "data": "hwQQABAAAAAzzMzMrMrMPMNERETMSqTMTDNDRMxKRMw8MzNEzEpEPDwzM0TMSkQ8PDMzRMxKRDw8MzPU3U1EPDwzMx39TUQ8PDMzHf1NRDw8MzPU3U1EPDwzM0TMSkQ8PDMzRMxKRDw8MzNEzEpEPEwzQ0TMSkTMw0RERMxKpMwzzMzMrMrMPA==",
         "mimeType": "image/x-mkcd-f4",
@@ -177,6 +171,12 @@
         "mimeType": "image/x-mkcd-f4",
         "tilemapTile": true,
         "displayName": "BottomLeftCorner"
+    },
+    "tile32": {
+        "data": "hwQQABAAAADDzDzMzMzMPExEzKqqTKTMPEPMqqpMRMw8M8yqqkxEPDwzzKqqTEQ8PDPMqqpM1D08M8ysqkxN3DwzocqqTETcPDOhyqpM3d08M8ysqkz93zwzzKqqTN3dPDPMqqpMRDw8M8yqqkxEPDxDzKqqTETMTETMqqpMpMzDzDzMzMzMPA==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "OpenedChest"
     },
     "level8": {
         "id": "level8",

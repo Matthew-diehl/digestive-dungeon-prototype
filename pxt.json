@@ -12,8 +12,7 @@
         "Control": "github:S0m3randomguy/control#4d59722d84a639a38ab19df701397c883f2119c2",
         "color-coded-tilemap": "*",
         "Inventory": "github:UnsignedArduino/Inventory#v1.1.1",
-        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
-        "Main tilemap assets": "github:samuelyud/main-tilemap-assets#cbb84d07f0abe2955e3f1a9ad74feec473fecfcf"
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2"
     },
     "files": [
         "main.blocks",

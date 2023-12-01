@@ -249,7 +249,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.weapon, function (sprite, otherS
                     toolbar.set_items([])
                 }
                 mySprite3 = sprites.create(all_weapons[index], SpriteKind.weapon)
-                spawn_weapon(mySprite3)
+                //spawn_weapon(mySprite3)
                 pause(100)
                 break;
             }
@@ -1770,9 +1770,9 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
         }
     })
 
-    scene.onOverlapTile(SpriteKind.Player, assets.tile`ChestLocked`, function (sprite, location) {
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`LockedChest`, function (sprite, location) {
         if(!chestLooted && roomEnemiesLeft == 0) {
-            tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestOpen)
+            tiles.coverAllTiles(assets.tile`LockedChest`, assets.tile`OpenedChest`)
             chestLooted = true
             blockControl.raiseEvent(2, 0)  
         }
@@ -1780,7 +1780,7 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
 
     setEnemies(currentX, currentY, 0)
     pause(1000)
-    tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestClosed)
+    tiles.coverAllTiles(assets.tile`LockedChest`, assets.tile`UnlockedChest`)
     if (getChest(currentX, currentY) && chestLooted == false) {
         scene.cameraShake(4, 500)
     }
@@ -1788,7 +1788,7 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
         blockControl.raiseEvent(2,0)
     }
     if (getCleared(currentX, currentY)) {
-        tiles.coverAllTiles(assets.tile`ChestLocked`, sprites.dungeon.chestOpen)
+        tiles.coverAllTiles(assets.tile`LockedChest`, assets.tile`OpenedChest`)
         chestLooted = true;
         blockControl.raiseEvent(2, 0)
     }
@@ -1906,14 +1906,6 @@ function loadRoomTilesEnemies(currentX: number, currentY: number){
         tiles.coverAllTiles(tiles.util.door6, assets.tile`LeftDoorClosedTop`)
         tiles.coverAllTiles(tiles.util.door3, assets.tile`LeftDoorClosedBottom`)
     }
-
-    
-
-    
-
-    
-
-    
 }
 
 
@@ -2397,13 +2389,13 @@ function add_weapon(item_in_list: Inventory.Item[]) {
     return false
 }
 
-function spawn_weapon(weapon_Sprite: Sprite) {
-    if (mySprite.y < 60) {
-        weapon_Sprite.setPosition(mySprite.x, mySprite.y + 30)
-    } else if (mySprite.y > 60) {
-        weapon_Sprite.setPosition(mySprite.x, mySprite.y - 30)
-    }
-}
+//function spawn_weapon(weapon_Sprite: Sprite) {
+//    if (mySprite.y < 60) {
+//        weapon_Sprite.setPosition(mySprite.x, mySprite.y + 30)
+//    } else if (mySprite.y > 60) {
+//        weapon_Sprite.setPosition(mySprite.x, mySprite.y - 30)
+//    }
+//}
 
 function remove_item_from_toolbar(index: number) {
     item = toolbar.get_items()[index]
