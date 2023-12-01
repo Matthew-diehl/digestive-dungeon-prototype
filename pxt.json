@@ -12,7 +12,8 @@
         "Control": "github:S0m3randomguy/control#4d59722d84a639a38ab19df701397c883f2119c2",
         "color-coded-tilemap": "*",
         "Inventory": "github:UnsignedArduino/Inventory#v1.1.1",
-        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2"
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
+        "Asset Farming": "github:jardfecci/asset-farming#4ca416ca4d66672d51c0316cb763d21f276af44a"
     },
     "files": [
         "main.blocks",
