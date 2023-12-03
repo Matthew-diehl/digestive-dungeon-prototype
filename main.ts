@@ -2197,45 +2197,45 @@ function bossEndSpawn(player: Sprite){
     tiles.setCurrentTilemap(tilemap`Outside`)
     player.setPosition(128, 170)
     
-    let monster = sprites.create(assets.image`monster1`, SpriteKind.Enemy)
-    let monsterBar = statusbars.create(40, 8, StatusBarKind.EnemyHealth)
-    monsterBar.attachToSprite(monster)
-    monsterBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
-    monsterBar.setBarBorder(1, 15)
-    monsterBar.max = 500
-    monsterBar.value = 500
-    monster.setPosition(128, 60)
+    let finalMonster = sprites.create(assets.image`monster1`, SpriteKind.Enemy)
+    let finalMonsterBar = statusbars.create(40, 8, StatusBarKind.EnemyHealth)
+    finalMonsterBar.attachToSprite(finalMonster)
+    finalMonsterBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+    finalMonsterBar.setBarBorder(1, 15)
+    finalMonsterBar.max = 500
+    finalMonsterBar.value = 500
+    finalMonster.setPosition(128, 60)
     forever(function () {
         animation.runImageAnimation(
-            monster,
+            finalMonster,
             [assets.image`monster1`, assets.image`monster2`],
             200,
             true
         )
-        if(monsterBar.value > 375){
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 30)
+        if (finalMonsterBar.value > 375){
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 30)
             pause(2000)
         }
-        else if (monsterBar.value <= 375 && monsterBar.value > 250){
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 40)
+        else if (finalMonsterBar.value <= 375 && finalMonsterBar.value > 250){
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 40)
             pause(1000)
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 40)
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 40)
             pause(1000)
         }
-        else if (monsterBar.value <= 250 && monsterBar.value > 125){
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 40)
+        else if (finalMonsterBar.value <= 250 && finalMonsterBar.value > 125){
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 40)
             pause(500)
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 40)
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 40)
             pause(500)
         }
         else{
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 60)
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 60)
             pause(500)
-            scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 60)
+            scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 60)
             pause(200)
         }
 
-        if(spriteutils.isDestroyed(monster)){
+        if (spriteutils.isDestroyed(finalMonster)){
 
             game.setGameOverMessage(true, "You Won! Time: " + info.getTimeElapsed())
             game.gameOver(true)
@@ -2254,13 +2254,6 @@ function gameStart(player: Sprite, floor: number){
     }
     tiles.destroySpritesOfKind(SpriteKind._TileSprite)
     tiles.setCurrentTilemap(assets.tilemap`empty`)
-
-    if (floor == 4) {
-        console.log("called boss spawn end")
-        bossEndSpawn(player)
-        blockControl.waitForEvent(111, 0)
-    }
-    
     player.setPosition(80, 60)
     currentRoom = null;
     info.changeScoreBy(1)
@@ -2493,6 +2486,12 @@ function gameStart(player: Sprite, floor: number){
 
     initialValue = 0;
     numberOfEdgeRooms = 0;
+
+    if (floor == 4) {
+        console.log("called boss spawn end")
+        bossEndSpawn(player)
+        blockControl.waitForEvent(111, 0)
+    }
 
     //floor and room gen
     floorGen(floor);
@@ -3458,6 +3457,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                     `, SpriteKind.fireball)
                     bomb.setScale(2)
                     bomb.setPosition(bact.x,bact.y)
+                    bomb.follow(player,10)
                     bomb.setFlag(SpriteFlag.GhostThroughSprites, true)
                     animation.runImageAnimation(
                         bomb,
@@ -3500,7 +3500,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                         true
                     )
                     pause(1000)
-                    bomb.setFlag(SpriteFlag.GhostThroughSprites, true)
+                    bomb.setFlag(SpriteFlag.GhostThroughSprites, false)
                     animation.runImageAnimation(
                         bomb,
                         [img`
@@ -3542,6 +3542,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                         false
                     )
                     pause(200)
+                    music.play(music.createSong(hex`0078000408010305001c000f0a006400f4010a0000040000000000000000000000000000000002060000000400011d06001c00010a006400f401640000040000000000000000000000000000000002060000000400011d09010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c80008000000010003020408`),music.PlaybackMode.InBackground)
                     sprites.destroy(bomb)
                     }
                     
@@ -4617,6 +4618,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                     `, SpriteKind.fireball)
                     bomb.setScale(3)
                     bomb.setPosition(bigBact.x, bigBact.y)
+                    bomb.follow(player,20)
                     bomb.setFlag(SpriteFlag.GhostThroughSprites, true)
                     animation.runImageAnimation(
                         bomb,
@@ -4659,7 +4661,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                         true
                     )
                     pause(1000)
-                    bomb.setFlag(SpriteFlag.GhostThroughSprites, true)
+                    bomb.setFlag(SpriteFlag.GhostThroughSprites, false)
                     animation.runImageAnimation(
                         bomb,
                         [img`
@@ -4701,6 +4703,8 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                         false
                     )
                     pause(200)
+                    music.play(music.createSong(hex`0078000408010305001c000f0a006400f4010a0000040000000000000000000000000000000002060000000400011d06001c00010a006400f401640000040000000000000000000000000000000002060000000400011d09010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c80008000000010003020408`), music.PlaybackMode.InBackground)
+
                     sprites.destroy(bomb)
                 }
 
