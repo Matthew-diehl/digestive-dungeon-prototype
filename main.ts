@@ -1285,7 +1285,7 @@ function start(){
     let attacking: boolean = false;
     controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         if (!attacking) {
-            music.play(music.createSong(hex`0078000408010108001c000e050046006603320000040a002d00000064001400013200020100020600000004000120`), music.PlaybackMode.InBackground)
+            music.play(music.createSong(hex`0078000408010103001c0001dc00690000045e0100040000000000000000000005640001040003060000000400011d`), music.PlaybackMode.InBackground)
             if (direction == 2) {
                 attacking = true
                 projectile = sprites.createProjectileFromSprite(img`
@@ -1947,6 +1947,7 @@ function start(){
         }
         else {
             statusbar.value += - playerDamage
+            music.play(music.createSong(hex`0078000408020204001c00100500640000041e000004000000000000000000000000000a040004060000000400012c09010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c8000600000001000102`),music.PlaybackMode.InBackground)
         }
         sprite.setFlag(SpriteFlag.GhostThroughSprites, true)
         pause(playerImmunityFrames)
@@ -1972,6 +1973,8 @@ function start(){
         }
         else {
             statusbar.value += - playerDamage
+            music.play(music.createSong(hex`0078000408020204001c00100500640000041e000004000000000000000000000000000a040004060000000400012c09010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c8000600000001000102`), music.PlaybackMode.InBackground)
+
         }
         sprite.setFlag(SpriteFlag.GhostThroughSprites, true)
         pause(playerImmunityFrames)
@@ -2010,40 +2013,7 @@ function bossStartSpawn (player: Sprite){
     tiles.setCurrentTilemap(tilemap`Outside`)
     player.setPosition(128, 170)
 
-    let monster = sprites.create(img`
-        ................................
-        ............ccc...ccc...........
-        ............ccc...ccc...........
-        .............a.....a............
-        .............a.....a............
-        .....cc.....aaa...aaa.....cc....
-        .....cc.....aaaaaaaaa.....cc....
-        .......aaaaa333333333aaaaa......
-        .......aaa3333333333333aaa......
-        .......aa333333333333333aa......
-        .......a33333333333333333a......
-        .......a33333bbbbbbc33333a......
-        .cc..aa33333bbbbbbbcb33333aa..cc
-        .ccaaaa3333bcccccbccbb3333aaaacc
-        .cc..aa3333ccbbbcccbbb3333aa..cc
-        ......a3333bcbbbccbccc3333a.....
-        ......a3333bcbbccbbcbb3333a.....
-        ......a3333bcbbcccbcbb3333a.....
-        .cc..aa3333ccbccbccccc3333aa..cc
-        .ccaaaa3333bbbcbbbccbb3333aaaacc
-        .cc..aa33333bcbbbbcbb33333aa..cc
-        .......a33333bbbbbcb33333a......
-        .......a33333333333333333a......
-        .......aa333333333333333aa......
-        .......aaa3333333333333aaa......
-        .......aaaaa333333333aaaaa......
-        .....cc.....aaaaaaaaa.....cc....
-        .....cc.....aaa...aaa.....cc....
-        .............a.....a............
-        .............a.....a............
-        ............ccc...ccc...........
-        ............ccc...ccc...........
-    `, SpriteKind.Enemy)
+    let monster = sprites.create(assets.image`monster1`, SpriteKind.Enemy)
     let monsterBar = statusbars.create(40, 8, StatusBarKind.EnemyHealth)
     monsterBar.attachToSprite(monster)
     monsterBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
@@ -2053,6 +2023,13 @@ function bossStartSpawn (player: Sprite){
     monster.setPosition(128, 60)
     let bossOver = false
     forever(function () {
+        let mySprite: Sprite = null
+        animation.runImageAnimation(
+            monster,
+            [assets.image`monster1`, assets.image`monster2`],
+            200,
+            true
+        )
         if (bossOver){}
         else{
         if (monsterBar.value > 375) {
@@ -2262,6 +2239,12 @@ function bossEndSpawn(player: Sprite){
     monsterBar.value = 500
     monster.setPosition(128, 60)
     forever(function () {
+        animation.runImageAnimation(
+            monster,
+            [assets.image`monster1`, assets.image`monster2`],
+            200,
+            true
+        )
         if(monsterBar.value > 375){
             scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 30)
             pause(2000)
@@ -2284,6 +2267,12 @@ function bossEndSpawn(player: Sprite){
             scene.followPath(monster, scene.aStar(tiles.locationOfSprite(monster), tiles.locationOfSprite(player)), 60)
             pause(200)
         }
+
+        if(spriteutils.isDestroyed(monster)){
+
+            game.setGameOverMessage(true, "You Won! Time: " + info.getTimeElapsed())
+            game.gameOver(true)
+        }
     })
     
     
@@ -2291,25 +2280,26 @@ function bossEndSpawn(player: Sprite){
 
 
 function gameStart(player: Sprite, floor: number){
-    tiles.destroySpritesOfKind(SpriteKind._TileSprite)
-    tiles.setCurrentTilemap(assets.tilemap`empty`)
-    if(floor == 0){
+    if (floor == 0) {
         bossStartSpawn(player)
         blockControl.waitForEvent(9, 0)
     }
+    tiles.destroySpritesOfKind(SpriteKind._TileSprite)
+    tiles.setCurrentTilemap(assets.tilemap`empty`)
+    
     player.setPosition(80, 60)
     currentRoom = null;
     info.changeScoreBy(1)
     startX = 0
     startY = 0
     statusbar.value = statusbar.max
-
-    if(floor >= 3 && floor < 4){
-        tiles.setCurrentTilemap(assets.tilemap`empty`)
-        player.setFlag(SpriteFlag.Invisible,true)
-        statusbar.setFlag(SpriteFlag.Invisible,true)
-        toolbar.setFlag(SpriteFlag.Invisible,true)
-        scene.setBackgroundImage(img`
+    timer.background(function() {
+        if (floor >= 2 && floor < 4) {
+            tiles.setCurrentTilemap(assets.tilemap`empty`)
+            player.setFlag(SpriteFlag.Invisible, true)
+            statusbar.setFlag(SpriteFlag.Invisible, true)
+            toolbar.setFlag(SpriteFlag.Invisible, true)
+            scene.setBackgroundImage(img`
             11111111111111111111111ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd1111111111
             11111111111111111111111dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd111111111
             11111111111111111111111ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd11111111
@@ -2432,22 +2422,24 @@ function gameStart(player: Sprite, floor: number){
             33333333333333333322222222222222222222222222222222222eeeeeeeeeeeeeeeccccccccccccccccccccccceeeeeeeeeeeeeeeeeeeeeee2222222222222222222222222333333333333333333333
         `)
 
-        game.showLongText("The Knight Climbs Higher...", DialogLayout.Bottom)
-        pause(1000)
-        player.setFlag(SpriteFlag.Invisible, false)
-        statusbar.setFlag(SpriteFlag.Invisible, false)
-        toolbar.setFlag(SpriteFlag.Invisible, true)
-        scene.setBackgroundImage(assets.image`Empty`)
-        blockControl.raiseEvent(11, 0)
-        
-    }
-    else if (floor == 4){
-        bossEndSpawn(player)
-    }
-    else{
+            game.showLongText("The Knight Climbs Higher...", DialogLayout.Bottom)
+            pause(1000)
+            player.setFlag(SpriteFlag.Invisible, false)
+            statusbar.setFlag(SpriteFlag.Invisible, false)
+            toolbar.setFlag(SpriteFlag.Invisible, false)
+            scene.setBackgroundImage(assets.image`Empty`)
+            blockControl.raiseEvent(11, 0)
 
-        blockControl.raiseEvent(11, 0)
-    }
+        }
+        else if (floor == 4) {
+            bossEndSpawn(player)
+        }
+        else {
+
+            blockControl.raiseEvent(11, 0)
+        }
+    })
+   
     blockControl.waitForEvent(11, 0)
     floorLayout = [
         [
