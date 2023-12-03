@@ -480,13 +480,13 @@ for (let index = 0; index <= all_weapons.length - 1; index++) {
         break;
         case 1: setDamage(index, 6)
         break;
-        case 2: setDamage(index, 6)
+        case 2: setDamage(index, 7)
         break;
-        case 3: setDamage(index, 7)
+        case 3: setDamage(index, 8)
         break;
-        case 4: setDamage(index, 8)
+        case 4: setDamage(index, 9)
         break;
-        case 5: setDamage(index, 12)
+        case 5: setDamage(index, 20)
         break;
         default: 0
     }
@@ -568,7 +568,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.item, function (sprite, otherSpr
                 }
                 else if (index == 7){
                     sprite.sayText("dodge chance +", 2000, true)
-                    playerDodgeChance = playerDodgeChance + 25
+                    playerDodgeChance = playerDodgeChance + 35
                 }
                 sprites.destroy(otherSprite)
                 break;
@@ -2254,6 +2254,12 @@ function gameStart(player: Sprite, floor: number){
     }
     tiles.destroySpritesOfKind(SpriteKind._TileSprite)
     tiles.setCurrentTilemap(assets.tilemap`empty`)
+
+    if (floor == 4) {
+        console.log("called boss spawn end")
+        bossEndSpawn(player)
+        blockControl.waitForEvent(111, 0)
+    }
     
     player.setPosition(80, 60)
     currentRoom = null;
@@ -2398,11 +2404,6 @@ function gameStart(player: Sprite, floor: number){
             scene.setBackgroundImage(assets.image`Empty`)
             blockControl.raiseEvent(11, 0)
 
-        }
-        else if (floor == 4) {
-            console.log("called boss spawn end")
-            bossEndSpawn(player)
-            blockControl.waitForEvent(111,0)
         }
         else {
 
