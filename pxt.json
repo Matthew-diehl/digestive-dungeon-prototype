@@ -13,7 +13,9 @@
         "color-coded-tilemap": "*",
         "Inventory": "github:UnsignedArduino/Inventory#v1.1.1",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
-        "Asset Farming": "github:jardfecci/asset-farming#4ca416ca4d66672d51c0316cb763d21f276af44a"
+        "Asset Farming": "github:jardfecci/asset-farming",
+        "pxt-countup": "github:shakao/pxt-countup#v0.0.2",
+        "TilemapPath": "github:UnsignedArduino/TilemapPath#27ff80b905e9a311d3e36aecbf38fd1fd23af8ca"
     },
     "files": [
         "main.blocks",
