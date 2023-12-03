@@ -2194,7 +2194,13 @@ function bossStartSpawn (player: Sprite){
 }
 
 function bossEndSpawn(player: Sprite){
-    tiles.setCurrentTilemap(tilemap`Outside`)
+
+    tiles.destroySpritesOfKind(SpriteKind._TileSprite)
+    tiles.setCurrentTilemap(assets.tilemap`empty`)
+
+    tiles.setCurrentTilemap(tilemap`OutsideFinal`)
+
+    console.log("tilemap loaded")
     player.setPosition(128, 170)
     
     let finalMonster = sprites.create(assets.image`monster1`, SpriteKind.Enemy)
@@ -2205,13 +2211,17 @@ function bossEndSpawn(player: Sprite){
     finalMonsterBar.max = 500
     finalMonsterBar.value = 500
     finalMonster.setPosition(128, 60)
+    console.log("monster loaded")
     forever(function () {
+        console.log("looping")
+        
         animation.runImageAnimation(
             finalMonster,
             [assets.image`monster1`, assets.image`monster2`],
             200,
             true
         )
+
         if (finalMonsterBar.value > 375){
             scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 30)
             pause(2000)
@@ -2262,6 +2272,7 @@ function gameStart(player: Sprite, floor: number){
     statusbar.value = statusbar.max
     timer.background(function() {
         if (floor >= 2 && floor < 4) {
+            sprites.destroyAllSpritesOfKind(SpriteKind.weapon)
             tiles.setCurrentTilemap(assets.tilemap`empty`)
             player.setFlag(SpriteFlag.Invisible, true)
             statusbar.setFlag(SpriteFlag.Invisible, true)
@@ -2486,13 +2497,18 @@ function gameStart(player: Sprite, floor: number){
 
     initialValue = 0;
     numberOfEdgeRooms = 0;
-
     if (floor == 4) {
-        console.log("called boss spawn end")
-        bossEndSpawn(player)
-        blockControl.waitForEvent(111, 0)
+        timer.background(function () {
+            console.log("called boss spawn end")
+            bossEndSpawn(player)
+        })  
+        return
     }
+       
+    
+    
 
+    
     //floor and room gen
     floorGen(floor);
     let floorCleared = false
