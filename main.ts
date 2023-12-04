@@ -2261,7 +2261,199 @@ function bossEndSpawn(player: Sprite){
             game.gameOver(true)
         }
     })
-    
+
+    let bat = sprites.create(img`
+        . . f f f . . . . . . . . f f f
+        . f f c c . . . . . . f c b b c
+        f f c c . . . . . . f c b b c .
+        f c f c . . . . . . f b c c c .
+        f f f c c . c c . f c b b c c .
+        f f c 3 c c 3 c c f b c b b c .
+        f f b 3 b c 3 b c f b c c b c .
+        . c b b b b b b c b b c c c . .
+        . c 1 b b b 1 b b c c c c . . .
+        c b b b b b b b b b c c . . . .
+        c b c b b b c b b b b f . . . .
+        f b 1 f f f 1 b b b b f c . . .
+        f b b b b b b b b b b f c c . .
+        . f b b b b b b b b c f . . . .
+        . . f b b b b b b c f . . . . .
+        . . . f f f f f f f . . . . . .
+    `, SpriteKind.Enemy)
+    bat.setFlag(SpriteFlag.GhostThroughWalls, true)
+    forever(function () {
+        animation.runImageAnimation(
+            bat,
+            [img`
+        f f f . . . . . . . . f f f . . 
+        c b b c f . . . . . . c c f f . 
+        . c b b c f . . . . . . c c f f 
+        . c c c b f . . . . . . c f c f 
+        . c c b b c f . c c . c c f f f 
+        . c b b c b f c c 3 c c 3 c f f 
+        . c b c c b f c b 3 c b 3 b f f 
+        . . c c c b b c b 1 b b b 1 c . 
+        . . . c c c c b b 1 b b b 1 c . 
+        . . . . c c b b b b b b b b b c 
+        . . . . f b b b b c 1 f f 1 b c 
+        . . . c f b b b b f 1 f f 1 f f 
+        . . c c f b b b b f 2 2 2 2 f f 
+        . . . . f c b b b b 2 2 2 2 f . 
+        . . . . . f c b b b b b b f . . 
+        . . . . . . f f f f f f f . . . 
+        `, img`
+        . . . . . . . . . . . f f f . . 
+        f f f . . . . . . . . c c f f f 
+        c b b c f . . . c c . c c c f f 
+        . c b b b f f c c 3 c c 3 c f f 
+        . c c c b b f c b 3 c b 3 c f f 
+        . c c b c b f c b b b b b b c f 
+        . c b b c b b c b 1 b b b 1 c c 
+        . c b c c c b b b b b b b b b c 
+        . . c c c c c b b c 1 f f 1 b c 
+        . . . c f b b b b f 1 f f 1 f c 
+        . . . c f b b b b f f f f f f f 
+        . . c c f b b b b f 2 2 2 2 f f 
+        . . . . f c b b b 2 2 2 2 2 f . 
+        . . . . . f c b b b 2 2 2 f . . 
+        . . . . . . f f f f f f f . . . 
+        . . . . . . . . . . . . . . . . 
+        `, img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . c c . c c . . . 
+        . . . . . . c c c 3 c c 3 f . . 
+        . . . . . c c c b 3 c b 3 c f . 
+        . . . . f f b b b b b b b b c f 
+        . . . . f f b b b 1 b b b 1 c c 
+        . . . f f f c b b b b b b b b c 
+        . . . f f f f b b c 1 f f 1 b c 
+        . . . b b b c c b f 1 f f 1 f f 
+        . . . c c c c f b f f f f f f f 
+        . . c c c b b f b f 2 2 2 2 f f 
+        . . . c b b c c b 2 2 2 2 2 f . 
+        . . c b b c c f f b 2 2 2 f . . 
+        . c c c c c f f f f f f f . . . 
+        c c c c . . . . . . . . . . . . 
+        `, img`
+        . f f f . . . . . . . . f f f . 
+        . c b b c f . . . . . . . c f f 
+        . . c b b c f . . . . . . c c f 
+        . . c c c b f . . . . . . . f c 
+        . . c c b b f f . . . . . f f c 
+        . . c b b c b f c c . c c f f f 
+        . . c b c c b f c c c c c f f f 
+        . . . c c c b c b 3 c c 3 c f . 
+        . . . c c c c b b 3 c b 3 b c . 
+        . . . . c c b b b b b b b b c c 
+        . . . c f b b b 1 1 b b b 1 1 c 
+        . . c c f b b b b b b b b b b f 
+        . . . . f b b b b c b b b c b f 
+        . . . . f c b b b 1 f f f 1 f . 
+        . . . . . f c b b b b b b f . . 
+        . . . . . . f f f f f f f . . . 
+        `],
+            100,
+            true
+        )
+        pause(2000)
+        if (!spriteutils.isDestroyed(bat)) {
+            let pro = sprites.create(img`
+                        . . . . . . . . . . . . . . . .
+                        . . . . . . . . . . . . . . . .
+                        . . . . 4 4 4 4 4 . . . . . . .
+                        . . . 4 4 4 4 4 . . . . . . . .
+                        . . 4 4 4 5 4 4 4 . . . . . . .
+                        . . 4 4 4 5 5 4 4 4 . . 4 . . .
+                        . . 4 4 5 1 5 4 4 4 4 4 4 . . .
+                        . . 4 4 1 5 5 5 1 5 4 4 4 . . .
+                        . . 4 4 5 5 1 5 5 5 5 4 4 . . .
+                        . . 4 4 4 1 5 5 5 1 4 4 4 . . .
+                        . . 4 4 4 4 5 1 5 4 4 4 4 . . .
+                        . . . 4 4 4 4 4 4 4 4 4 . . . .
+                        . . . . 4 4 4 4 4 4 4 . . . . .
+                        . . . . . . . . . . . . . . . .
+                        . . . . . . . . . . . . . . . .
+                        . . . . . . . . . . . . . . . .
+                    `, SpriteKind.fireball)
+            music.play(music.createSong(hex`0078000408010207001c00020a006400f401640000040000000000000000000000000000000003060000000400012509010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c800070000000100020508`), music.PlaybackMode.InBackground)
+                animation.runImageAnimation(
+                    pro,
+                    [img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . 2 4 4 2 . . . . . . 
+        . . . . . 2 4 4 4 4 2 . . . . . 
+        . . . . . 2 4 4 4 4 2 . . . . . 
+        . . . . . . 2 4 4 2 . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 7 7 . . . . . . . 
+        . . . . . . 7 8 8 7 . . . . . . 
+        . . . . . 7 8 8 8 8 7 . . . . . 
+        . . . . . 7 8 8 8 8 7 . . . . . 
+        . . . . . . 7 8 8 7 . . . . . . 
+        . . . . . . . 7 7 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+                    100,
+                    true
+                )
+            let speed = 50
+            pro.setPosition(bat.x, bat.y)
+            pro.setFlag(SpriteFlag.GhostThroughWalls, true)
+            pro.setFlag(SpriteFlag.AutoDestroy, true)
+            let tempspeed = distanceFormula(player.x - bat.x, 0, player.y - bat.y, 0)
+            let ratio = speed / tempspeed
+            pro.vx = (player.x - bat.x) * ratio
+            pro.vy = (player.y - bat.y) * ratio
+            let batpath = TilemapPath.create_path([tiles.getTileLocation(randint(1, 8), randint(1, 6))])
+
+            pause(2000)
+            TilemapPath.follow_path(bat, batpath, 40)
+        }
+    })
+    let batBar = statusbars.create(20, 6, StatusBarKind.EnemyHealth)
+    batBar.attachToSprite(bat)
+    batBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+    batBar.setBarBorder(1, 15)
+    batBar.max = 8
+    tiles.placeOnRandomTile(bat, sprites.castle.tileGrass2)
     
 }
 
@@ -3630,7 +3822,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
     }
     tiles.coverAllTiles(tiles.util.object4, assets.tile`FloorTile`)
     if (getBoss(currentX, currentY) && floorBossAlive) {
-        if(floor == 1){
+        if(floor == 2){
         setEnemies(currentX,currentY, 3)
         roomEnemiesLeft = getEnemies(currentX, currentY)
         let kingWorm = sprites.create(img`
@@ -4302,7 +4494,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
 
         
         }
-        else if(floor == 2){
+        else if(floor == 1){
             setEnemies(currentX, currentY, 3)
             roomEnemiesLeft = getEnemies(currentX,currentY)
             let giantSlime = sprites.create(img`
