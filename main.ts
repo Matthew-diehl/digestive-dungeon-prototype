@@ -547,7 +547,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.item, function (sprite, otherSpr
                 }
                 else if (index == 2){
                     sprite.sayText("attack speed +", 2000, true)
-                    attackSpeed = attackSpeed - (attackSpeed * .20)
+                    attackSpeed = attackSpeed - (attackSpeed * .15)
                 }
                 else if (index == 3){
                     sprite.sayText("attack speed +", 2000, true)
@@ -559,7 +559,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.item, function (sprite, otherSpr
                 }
                 else if (index == 5){
                     sprite.sayText("speed +", 2000, true)
-                    playerSpeed = playerSpeed + 20
+                    playerSpeed = playerSpeed + 5
                     updateSpeed(playerSpeed,sprite)
                 }
                 else if (index == 6){
@@ -568,7 +568,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.item, function (sprite, otherSpr
                 }
                 else if (index == 7){
                     sprite.sayText("dodge chance +", 2000, true)
-                    playerDodgeChance = playerDodgeChance + 35
+                    playerDodgeChance = playerDodgeChance + 33 //leaves a 1% chance you'll still take damage
                 }
                 sprites.destroy(otherSprite)
                 break;
@@ -1285,7 +1285,7 @@ function start(){
     let attacking: boolean = false;
     controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         if (!attacking) {
-            music.play(music.createSong(hex`0078000408010103001c0001dc00690000045e0100040000000000000000000005640001040003060000000400011d`), music.PlaybackMode.InBackground)
+            music.play(music.createSong(hex`0078000408010203001c0001dc00690000045e0100040000000000000000000005640001040003060000000400011d09010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c8000600000001000106`), music.PlaybackMode.InBackground)
             if (direction == 2) {
                 attacking = true
                 projectile = sprites.createProjectileFromSprite(img`
@@ -1991,7 +1991,7 @@ function start(){
             let lifeStealCheck = randint(1, 100)
             if (lifeStealChance >= lifeStealCheck) {
                 statusbar.value++
-                music.play(music.createSong(hex`002c010408010301001c000f05001202c102c201000405002800000064002800031400060200040c0000000400011e04000800012205001c000f0a006400f4010a0000040000000000000000000000000000000002060008000c00012709010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c800150000000100020409040005000204070800090002080a`),music.PlaybackMode.InBackground)
+                music.play(music.createSong(hex`002c010408010301001c000f05001202c102c20100040500280000006400280003140006020004190000000400011e04000800012208000c000224290c001000012a05001c000f0a006400f4010a0000040000000000000000000000000000000002060008000c00012709010e02026400000403780000040a000301000000640001c80000040100000000640001640000040100000000fa0004af00000401c80000040a00019600000414000501006400140005010000002c0104dc00000401fa0000040a0001c8000004140005d0076400140005d0070000c800029001f40105c201f4010a0005900114001400039001000005c201f4010500058403050032000584030000fa00049001000005c201f4010500058403c80032000584030500640005840300009001049001000005c201f4010500058403c80064000584030500c8000584030000f40105ac0d000404a00f00000a0004ac0d2003010004a00f0000280004ac0d9001010004a00f0000280002d00700040408070f0064000408070000c80003c800c8000e7d00c80019000e64000f0032000e78000000fa00032c01c8000ee100c80019000ec8000f0032000edc000000fa0003f401c8000ea901c80019000e90010f0032000ea4010000fa0001c8000004014b000000c800012c01000401c8000000c8000190010004012c010000c80002c800000404c8000f0064000496000000c80002c2010004045e010f006400042c010000640002c409000404c4096400960004f6090000f40102b80b000404b80b64002c0104f40b0000f401022003000004200300040a000420030000ea01029001000004900100040a000490010000900102d007000410d0076400960010d0070000c800130000000100010404000500020407080009000108`),music.PlaybackMode.InBackground)
             }
             sprites.destroy(otherSprite, effects.disintegrate, 100)
         }
@@ -2234,15 +2234,15 @@ function bossEndSpawn(player: Sprite){
         }
         else if (finalMonsterBar.value <= 250 && finalMonsterBar.value > 125){
             scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 40)
-            pause(500)
+            pause(750)
             scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 40)
-            pause(500)
+            pause(750)
         }
         else{
             scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 60)
             pause(500)
             scene.followPath(finalMonster, scene.aStar(tiles.locationOfSprite(finalMonster), tiles.locationOfSprite(player)), 60)
-            pause(200)
+            pause(500)
         }
 
         if (spriteutils.isDestroyed(finalMonster)){
@@ -2563,9 +2563,13 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
     scene.onOverlapTile(SpriteKind.Player, assets.tile`LockedChest`, function (sprite, location) {
         if(!chestLooted && roomEnemiesLeft <= 0) {
             tiles.coverAllTiles(assets.tile`LockedChest`, assets.tile`OpenedChest`)
-            let loot = randint(1,100)
-            if(loot <= 65) {
-                let rollRare = randint(1,16)
+            let randLootSeed = Random.createRNG(randint(2,7000))
+            randLootSeed.resetRNG()
+            let loot = randLootSeed.randomRange(1,100)
+            if(loot <= 60) {
+                let rng = Random.createRNG(randint(1,5000))
+                let rollRare = rng.randomRange(1, 16)
+
                 if(rollRare <= 4) {
                     give_item(0,player)
                 }
@@ -2582,8 +2586,9 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
                     give_weapon(2,player,72,44)
                 }
             }
-            else if (65 < loot && loot <= 90){
-                let rollEpic = randint(1,16)
+            else if (60 < loot && loot <= 90){
+                let randomEpicSeed = Random.createRNG(randint(3,6000))
+                let rollEpic = randomEpicSeed.randomRange(1,16)
                 if (rollEpic <= 4) {
                     give_item(1, player)
                 }
@@ -2601,7 +2606,8 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
                 }
             }
             else {
-                let legendaryRoll = randint(1,10)
+                let randomLegendarySeed = Random.createRNG(randint(6,4000))
+                let legendaryRoll = randomLegendarySeed.randomRange(1,10)
                 if (legendaryRoll <= 4) {
                     give_item(6, player)
                 }
@@ -2785,7 +2791,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                 . . c c c c c . . c c c c c . .
                 `, SpriteKind.Enemy)
                 forever(function(){
-                scene.followPath(skele, scene.aStar(tiles.locationOfSprite(skele), tiles.locationOfSprite(player)), 10)
+                scene.followPath(skele, scene.aStar(tiles.locationOfSprite(skele), tiles.locationOfSprite(player)), 15)
                     animation.runImageAnimation(
                         skele,
                         [img`
@@ -3012,7 +3018,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
             case 4:
                 let worm= sprites.create(assets.image`underGround`, SpriteKind.Enemy)
                 forever(function () {
-                        pause(400)
+                        
                         animation.runImageAnimation(
                             worm,
                             [img`
@@ -3070,6 +3076,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                             150,
                             false
                         )
+                    pause(150)
                     worm.setImage(img`
                         . . . . b b b b b b b b . . . .
                         . . . b 3 3 3 3 3 3 3 3 b . . .
@@ -3157,7 +3164,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                 wormBar.attachToSprite(worm)
                 wormBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
                 wormBar.setBarBorder(1, 15)
-                wormBar.max = 12
+                wormBar.max = 13
                 tiles.placeOnRandomTile(worm, assets.tile`FloorTile`)
                 break;
             case 5:
@@ -3373,7 +3380,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                 wizBar.attachToSprite(wizard)
                 wizBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
                 wizBar.setBarBorder(1, 15)
-                wizBar.max = 10
+                wizBar.max = 8
                 tiles.placeOnRandomTile(wizard, assets.tile`FloorTile`)
                 break;
             case 6:
@@ -3398,7 +3405,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                 if (!getBoss(currentX, currentY)) {
                     forever(function () {
                         let bactPath = TilemapPath.create_path([tiles.getTileLocation(randint(1, 8), randint(1, 6)), tiles.getTileLocation(randint(1, 8), randint(1, 6))])
-                        TilemapPath.follow_path(bact, bactPath, 25)
+                        TilemapPath.follow_path(bact, bactPath, 30)
                     })
                 }
                 else {
@@ -3473,7 +3480,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                     `, SpriteKind.fireball)
                     bomb.setScale(2)
                     bomb.setPosition(bact.x,bact.y)
-                    bomb.follow(player,10)
+                    bomb.follow(player,20)
                     bomb.setFlag(SpriteFlag.GhostThroughSprites, true)
                     animation.runImageAnimation(
                         bomb,
@@ -3515,7 +3522,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                         100,
                         true
                     )
-                    pause(1000)
+                    pause(2000)
                     bomb.setFlag(SpriteFlag.GhostThroughSprites, false)
                     animation.runImageAnimation(
                         bomb,
@@ -3652,14 +3659,14 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
         bossWormBar.attachToSprite(kingWorm)
         bossWormBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
         bossWormBar.setBarBorder(1, 15)
-        bossWormBar.max = 50
+        bossWormBar.max = 80
         tiles.placeOnRandomTile(kingWorm, tiles.util.object4)
         floorBossAlive = false
-        let wormAnimationSpeed = 300
-        let wormMoveSpeed = 30
+        let wormAnimationSpeed = 200
+        let wormMoveSpeed = 40
         pause(2000)
         forever(function() {
-            kingWorm.setFlag(SpriteFlag.GhostThroughSprites, true)
+            
             animation.runImageAnimation(
                 kingWorm,
                 [img`
@@ -3927,50 +3934,51 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
         ................................
         ................................
         `, img`
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        .......c.c.c.c.c.c.c.c.c.c......
-        ......cbcbcbcbcbcbcbcbcbcbc.....
-        .....cbbbbbbbbbbbbbcbbbbccbc....
-        ......cbccccbbbbccbbcbbbbbc.....
-        .....cbbbbbbbbbccbbbbbccccbc....
-        ......cbcbcbcbcbcbcbcbcbcbc.....
-        .....c.c.c.c.c.c.c.c.c.c.c.c....
-        ................................
-        ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            .......c.c.c.c.c.c.c.c.c.c......
+            ......cbcbcbcbcbcbcbcbcbcbc.....
+            .....cbbbbbbbbbbbbbcbbbbccbc....
+            ......cbccccbbbbccbbcbbbbbc.....
+            .....cbbbbbbbbbccbbbbbccccbc....
+            ......cbcbcbcbcbcbcbcbcbcbc.....
+            .....c.c.c.c.c.c.c.c.c.c.c.c....
+            ................................
+            ................................
         `],
                 wormAnimationSpeed,
                 false
             )
+            kingWorm.setFlag(SpriteFlag.GhostThroughSprites, true)
             pause(wormAnimationSpeed)
             if(bossWormBar.value < 20){
-                wormAnimationSpeed = 150
-                wormMoveSpeed = 60
+                wormAnimationSpeed = 100
+                wormMoveSpeed = 70
             }
             scene.followPath(kingWorm, scene.aStar(tiles.locationOfSprite(kingWorm), tiles.locationOfSprite(player)), wormMoveSpeed)
             pause(wormAnimationSpeed*5)
-            kingWorm.setFlag(SpriteFlag.GhostThroughSprites, false)
+           
             animation.runImageAnimation(
                 kingWorm,
                 [img`
@@ -4274,6 +4282,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                 wormAnimationSpeed,
                 false
             )
+            kingWorm.setFlag(SpriteFlag.GhostThroughSprites, false)
             pause(wormAnimationSpeed*10)
 
             
@@ -4426,7 +4435,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                    
                     slime.setPosition(giantSlime.x + randint(-1,1),giantSlime.y + randint(-1,1))
                     forever(function () {
-                        scene.followPath(slime, scene.aStar(tiles.locationOfSprite(slime), tiles.locationOfSprite(player)), 30)
+                        scene.followPath(slime, scene.aStar(tiles.locationOfSprite(slime), tiles.locationOfSprite(player)), 40)
                         animation.runImageAnimation(
                             slime,
                             [img`
@@ -4477,7 +4486,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                     slimeBar.attachToSprite(slime)
                     slimeBar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
                     slimeBar.setBarBorder(1, 15)
-                    slimeBar.max = 5
+                    slimeBar.max = 8
                 }
                 pause(2000)
             })
@@ -4527,6 +4536,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
             tiles.placeOnRandomTile(bigBact, tiles.util.object4)
             floorBossAlive = false
             let bactSpeed = 35
+            let bactAnimationSpeed = 300
             pause(2000)
 
             forever(function () {
@@ -4603,11 +4613,12 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
         ............aaa...aaa...........
         ............aaa...aaa...........
         `],
-                    300,
+                    bactAnimationSpeed,
                     true
                 )
-                if (bigBactBar.value < 75) {
+                if (bigBactBar.value < 100) {
                     bactSpeed = 75
+                    bactAnimationSpeed = 150
                 }
 
                 pause(2000)
@@ -4634,7 +4645,7 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
                     `, SpriteKind.fireball)
                     bomb.setScale(3)
                     bomb.setPosition(bigBact.x, bigBact.y)
-                    bomb.follow(player,20)
+                    bomb.follow(player,35)
                     bomb.setFlag(SpriteFlag.GhostThroughSprites, true)
                     animation.runImageAnimation(
                         bomb,
@@ -4673,10 +4684,10 @@ function loadRoomTilesEnemies(currentX: number, currentY: number, player: Sprite
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `],
-                        200,
+                        100,
                         true
                     )
-                    pause(1000)
+                    pause(2000)
                     bomb.setFlag(SpriteFlag.GhostThroughSprites, false)
                     animation.runImageAnimation(
                         bomb,
