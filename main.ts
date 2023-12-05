@@ -2707,6 +2707,42 @@ function gameStart(player: Sprite, floor: number){
         })  
         return
     }
+
+
+    blockControl.runInParallel(function() {
+        let textSprite = textsprite.create("", 0, 1)
+        textSprite.setOutline(1, 15)
+        
+        if (floor == 1) {
+            pause(500)
+            textSprite.setText("The Monster's Belly")
+            textSprite.setPosition(80, 30)
+            pause(2000)
+            sprites.destroy(textSprite)
+        }
+        if(floor == 2){
+            pause (500)
+            textSprite.setText("The behemoth's lungs")
+            textSprite.setPosition(80, 30)
+            pause(2000)
+            sprites.destroy(textSprite)
+        }
+        if (floor == 3) {
+            pause(500)
+            textSprite.setText("Brains of the Beast")
+            textSprite.setPosition(80, 30)
+            pause(2000)
+            sprites.destroy(textSprite)
+        }
+        if (floor == 4) {
+            pause(500)
+            textSprite.setText("Outside the Giant")
+            textSprite.setPosition(80, 30)
+            pause(2000)
+            sprites.destroy(textSprite)
+        }
+    })
+    
        
     
     
