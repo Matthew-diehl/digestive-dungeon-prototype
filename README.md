@@ -1,4 +1,4 @@
- 
+ Game link: [https://arcade.makecode.com/S43335-22706-82920-89779)
 
 
 > Open this page at [https://matthew-diehl.github.io/digestive-dungeon-prototype/](https://matthew-diehl.github.io/digestive-dungeon-prototype/)
