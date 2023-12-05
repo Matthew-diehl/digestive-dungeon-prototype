@@ -2852,7 +2852,7 @@ function fullRoomLoadSequence (currentX: number, currentY: number, player: Sprit
     blockControl.onEvent(3, 0, function() {
         if(!getBoss(GcurrentX,GcurrentY)){
             if (goingUp) {
-                player.setPosition(80, 96)
+                player.setPosition(80, 104)
             }
             else if (goingDown) {
             player.setPosition(80, 24)
