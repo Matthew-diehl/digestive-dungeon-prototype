@@ -16,7 +16,8 @@
         "Asset Farming": "github:jardfecci/asset-farming",
         "pxt-countup": "github:shakao/pxt-countup#v0.0.2",
         "TilemapPath": "github:UnsignedArduino/TilemapPath#27ff80b905e9a311d3e36aecbf38fd1fd23af8ca",
-        "FastRandomBlocks": "github:UnsignedArduino/Fast-Random-Blocks#8c985a77e5c4278e43a7bc375db095c67afb58ed"
+        "FastRandomBlocks": "github:UnsignedArduino/Fast-Random-Blocks#8c985a77e5c4278e43a7bc375db095c67afb58ed",
+        "arcade-text": "github:microsoft/arcade-text#v1.3.0"
     },
     "files": [
         "main.blocks",
